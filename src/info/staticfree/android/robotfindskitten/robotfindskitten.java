@@ -16,8 +16,10 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.res.ColorStateList;
+import android.content.res.Resources.Theme;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -25,6 +27,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.RelativeLayout.LayoutParams;
 
 public class robotfindskitten extends Activity {
 	public enum InputMode { ANY_KEY, DIRECTIONAL };
@@ -55,17 +58,20 @@ public class robotfindskitten extends Activity {
         //setContentView(R.layout.intro);
         
         // load all the characters
-       validChars = "";
+        StringBuilder chars = new StringBuilder();
         for (int i = 0x21; i < 127; i++){
         	char c = Character.toChars(i)[0];
         	if (! Character.isWhitespace(c) && ! Character.isISOControl(c) && c != '#'){
-        		validChars += c;
+        		chars.append(c);
         	}
         }
+        validChars = chars.toString();
         System.err.println("valid characters: " + validChars);
 
         loadMessages();
         
+		initializeScreen();
+        addThings();
     }
     
     private void initializeScreen(){
@@ -121,7 +127,7 @@ public class robotfindskitten extends Activity {
     	
     	kitten = new Thing(ThingType.KITTEN);
     	kitten.representation = findViewById(R.id.kitten);
-    	((TextView)kitten.representation).setText(randomChar());
+    	((TextView)kitten.representation).setText("" + randomChar());
     	randomizeThingColor(kitten);
     	placeThing(kitten);
     	updateThing(kitten);
@@ -140,8 +146,12 @@ public class robotfindskitten extends Activity {
     				}
     			}
     		}
-    		something.representation = new TextView(screenLayout.getContext());
-    		((TextView)something.representation).setText(randomChar());
+    		
+    		TextView somethingText = new TextView(screenLayout.getContext());
+    		somethingText.setLayoutParams(new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT));
+    		somethingText.setText("" + randomChar());
+    		screenLayout.addView(somethingText);
+    		something.representation = somethingText;
     		placeThing(something);
     		updateThing(something);
     	}
@@ -149,8 +159,9 @@ public class robotfindskitten extends Activity {
     
     public void updateThing(Thing t){
     	TextView tv = (TextView)t.representation;
+    	RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams)tv.getLayoutParams();
     	
-    	tv.setPadding(t.x * cellWidth, t.y * cellHeight, 
+    	lp.setMargins(t.x * cellWidth, t.y * cellHeight, 
     			tv.getPaddingRight(), tv.getPaddingBottom());
     	
     }
@@ -205,9 +216,7 @@ public class robotfindskitten extends Activity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
     	if (inputMode == InputMode.ANY_KEY){
-    		setContentView(R.layout.main);
-            initializeScreen();
-            addThings();
+
     		return true;
     	}else if (inputMode == InputMode.DIRECTIONAL){
     		if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT){
