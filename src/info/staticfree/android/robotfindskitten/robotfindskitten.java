@@ -31,12 +31,16 @@ import android.widget.RelativeLayout.LayoutParams;
 
 public class robotfindskitten extends Activity {
 	public enum InputMode { ANY_KEY, DIRECTIONAL };
+	public enum Direction { UP, RIGHT, DOWN, LEFT };
 	
 	// these define the playing field. Mostly useful for detecting where things are.
 	
 	private Random rand = new Random();
 	
 	private RFKView rfkView;
+	private Thing robot;
+	private Toast recentMessage;
+	private Thing recentCollision;
 	
 	private List<String> messages = new ArrayList<String>();
 	private String validChars;
@@ -99,9 +103,7 @@ public class robotfindskitten extends Activity {
     }
     
     public void addThings(){
-    	
-    	RelativeLayout screenLayout = (RelativeLayout)findViewById(R.id.screen);
-    	Thing robot = new Thing(ThingType.ROBOT);    	
+    	robot = new Thing(ThingType.ROBOT);    	
     	rfkView.addRobot(robot);
     	
     	Thing kitten = new Thing(ThingType.KITTEN);
@@ -128,12 +130,68 @@ public class robotfindskitten extends Activity {
     		rfkView.addThing(something);
     	}
     }
-    
+
+    public boolean isCollision(int x, int y){
+    	Thing thing = rfkView.thingAt(x, y);
+
+    	if (thing != null){
+        	// we've already handled this collision, no need to repeat.
+    		if (thing == recentCollision) return true;
+    		recentCollision = thing;
+    		
+    		if (thing.type == ThingType.KITTEN){
+    			if (recentMessage != null ) recentMessage.cancel();
+    			recentMessage = Toast.makeText(this, "Way to go, robot! You found kitten!", Toast.LENGTH_LONG);
+    			recentMessage.show();
+    			
+    		}else if (thing.type == ThingType.NKI){
+    			if (recentMessage != null ) recentMessage.cancel();
+    			recentMessage = Toast.makeText(this, thing.message, Toast.LENGTH_LONG);
+    			recentMessage.show();
+    		}
+    		return true;
+    	}else {
+    		recentCollision = null;
+    		return false;
+    	}
+    }
+    public void moveRobot(Direction d){
+    	int width = rfkView.getBoardWidth();
+    	int height = rfkView.getBoardHeight();
+    	switch (d){
+    	case UP:
+    		if (robot.y == 0) break;
+    		if (! isCollision(robot.x, robot.y - 1)){
+    			robot.y--;
+    		}
+    		break;
+
+    	case DOWN:
+    		if (robot.y == height) break;
+    		if (! isCollision(robot.x, robot.y + 1)){
+    			robot.y++;
+    		}
+    		break;
+
+    	case LEFT:
+    		if (robot.x == 0) break;
+    		if (! isCollision(robot.x - 1, robot.y)){
+    			robot.x--;
+    		}
+    		break;
+
+    	case RIGHT:
+    		if (robot.x == width) break;
+    		if (! isCollision(robot.x + 1, robot.y)){
+    			robot.x++;
+    		}
+    		break;
+
+    	}
+    	rfkView.invalidate();
+    }
 
     
-
-    
-
     @Override
     public boolean onTrackballEvent(MotionEvent event) {
     	// TODO Auto-generated method stub
@@ -153,9 +211,18 @@ public class robotfindskitten extends Activity {
     		return true;
     	}else if (inputMode == InputMode.DIRECTIONAL){
     		if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT){
-    			
+    			moveRobot(Direction.LEFT);
+    			return true;
+    		}else if (keyCode == KeyEvent.KEYCODE_DPAD_UP){
+    			moveRobot(Direction.UP);
+    			return true;
+    		}else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT){
+    			moveRobot(Direction.RIGHT);
+    			return true;
+    		}else if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN){
+    			moveRobot(Direction.DOWN);
+    			return true;
     		}
-    		return true;
     	}
     	return false;
     }

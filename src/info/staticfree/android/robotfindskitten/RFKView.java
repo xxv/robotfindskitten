@@ -16,7 +16,6 @@ import android.view.View;
 import android.widget.TextView;
 
 public class RFKView extends View {
-	public enum Direction { UP, RIGHT, DOWN, LEFT };
 	
 	private List<Thing> things = new ArrayList<Thing>();
 	
@@ -142,16 +141,22 @@ public class RFKView extends View {
 		addThing(kitten);
 	}
 	
-    public void moveRobot(Direction d){
-    	
-    	switch (d){
-    	case UP:
-    		if (robot.y == 0) break;
-    		robot.y--;
-    		break;
-    	
-    	}
-    }
+	public Thing thingAt(int x, int y){
+		for (Thing thing: things){
+			if (thing.x == x && thing.y == y){
+				return thing;
+			}
+		}
+		return null;
+	}
+	
+	public int getBoardWidth(){
+		return width;
+	}
+	
+	public int getBoardHeight(){
+		return height;
+	}
 	
 	public List<Thing> getThings(){
 		return things;
