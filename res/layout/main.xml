@@ -3,24 +3,13 @@
 <RelativeLayout
  android:layout_width="fill_parent"
   android:layout_height="fill_parent"
-  android:background="#000"
   android:id="@+id/screen"
    xmlns:android="http://schemas.android.com/apk/res/android">
    
-    
-   <TextView android:id="@+id/robot"
-    android:text="#"
-   	android:layout_height="wrap_content"
-   	 android:layout_width="wrap_content"
-   	 android:textColor="#000"
-   	 android:background="#f00"
-   	 android:typeface="monospace"
-   	  android:layout_marginLeft="5dp" android:layout_marginTop="23dp" />
-   	  
-   	     <TextView android:id="@+id/kitten"
-    android:text="\@"
-   	android:layout_height="wrap_content"
-   	 android:layout_width="wrap_content"
-   	 android:typeface="monospace"
-   	  android:layout_marginLeft="23dp" android:layout_marginTop="5dp" />
+   <info.staticfree.android.robotfindskitten.RFKView 
+    android:layout_width="fill_parent"
+  	android:layout_height="fill_parent" 
+  	android:id="@+id/rfk"
+  	/>
+
 </RelativeLayout>

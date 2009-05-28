@@ -31,31 +31,23 @@ import android.widget.RelativeLayout.LayoutParams;
 
 public class robotfindskitten extends Activity {
 	public enum InputMode { ANY_KEY, DIRECTIONAL };
-	public enum Direction { UP, RIGHT, DOWN, LEFT };
 	
 	// these define the playing field. Mostly useful for detecting where things are.
-	private List<Thing> screen = new ArrayList<Thing>();
-	private Thing robot;
-	private Thing kitten;
-	
-	private int cellWidth;
-	private int cellHeight;
-	private int width;
-	private int height;
 	
 	private Random rand = new Random();
+	
+	private RFKView rfkView;
 	
 	private List<String> messages = new ArrayList<String>();
 	private String validChars;
 	
-	private InputMode inputMode = InputMode.ANY_KEY;
+	private InputMode inputMode = InputMode.DIRECTIONAL;
 	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        //setContentView(R.layout.intro);
         
         // load all the characters
         StringBuilder chars = new StringBuilder();
@@ -69,20 +61,13 @@ public class robotfindskitten extends Activity {
         System.err.println("valid characters: " + validChars);
 
         loadMessages();
+
+        rfkView = (RFKView)findViewById(R.id.rfk);
         
-		initializeScreen();
         addThings();
     }
     
-    private void initializeScreen(){
-    	RelativeLayout screenLayout = (RelativeLayout)findViewById(R.id.screen);
-    	TextView robotText = (TextView)findViewById(R.id.robot);
-    	
-    	cellWidth = robotText.getWidth();
-    	width = screenLayout.getWidth()/cellWidth;
-    	cellHeight = robotText.getHeight();
-    	height = screenLayout.getHeight()/cellHeight;
-    }
+    
     
     public void loadMessages(){
     	InputStream is = getResources().openRawResource(R.raw.messages);
@@ -106,11 +91,7 @@ public class robotfindskitten extends Activity {
     }
     
     public void randomizeThingColor(Thing t){
-    	
-    	if (t.representation != null){
-    		((TextView)t.representation).setTextColor(
-    				Color.argb(255, rand.nextInt(256),rand.nextInt(256),rand.nextInt(256))); 
-    	}
+    	t.color = Color.argb(255, rand.nextInt(256),rand.nextInt(256),rand.nextInt(256)); 
     }
    
     public char randomChar(){
@@ -120,87 +101,39 @@ public class robotfindskitten extends Activity {
     public void addThings(){
     	
     	RelativeLayout screenLayout = (RelativeLayout)findViewById(R.id.screen);
-    	robot = new Thing(ThingType.ROBOT);
-    	robot.representation = findViewById(R.id.robot);
-    	placeThing(robot);
-    	updateThing(robot);
+    	Thing robot = new Thing(ThingType.ROBOT);    	
+    	rfkView.addRobot(robot);
     	
-    	kitten = new Thing(ThingType.KITTEN);
-    	kitten.representation = findViewById(R.id.kitten);
-    	((TextView)kitten.representation).setText("" + randomChar());
+    	Thing kitten = new Thing(ThingType.KITTEN);
+    	kitten.character = "" + randomChar();
     	randomizeThingColor(kitten);
-    	placeThing(kitten);
-    	updateThing(kitten);
+    	rfkView.addKitten(kitten);
     	
     	// add in the other things that aren't kitten
     	for(int i = 0; i < 20; i++){
     		Thing something = new Thing(ThingType.NKI);
-    		
+        	something.character = "" + randomChar();
+        	randomizeThingColor(something);
+        	
     		// give that something a unique message
     		while (something.message == null){
     			something.message =  messages.get(rand.nextInt(messages.size()));
-    			for (Thing someOtherThing: screen){
+    			for (Thing someOtherThing: rfkView.getThings()){
     				if (something.message == someOtherThing.message){
     					something.message = null;
     					break;
     				}
     			}
     		}
-    		
-    		TextView somethingText = new TextView(screenLayout.getContext());
-    		somethingText.setLayoutParams(new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT));
-    		somethingText.setText("" + randomChar());
-    		screenLayout.addView(somethingText);
-    		something.representation = somethingText;
-    		placeThing(something);
-    		updateThing(something);
+    		rfkView.addThing(something);
     	}
     }
     
-    public void updateThing(Thing t){
-    	TextView tv = (TextView)t.representation;
-    	RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams)tv.getLayoutParams();
-    	
-    	lp.setMargins(t.x * cellWidth, t.y * cellHeight, 
-    			tv.getPaddingRight(), tv.getPaddingBottom());
-    	
-    }
+
     
-    /**
-     * Places a Thing randomly and non-overlappingly on the screen.
-     * 
-     * @param t
-     */
-    public void placeThing(Thing t){
-    	Random rand = new Random();
-    	t.x = -1; // unplaced
-    	
-    	while (t.x == -1){
-    		int x = rand.nextInt(width);
-    		int y = rand.nextInt(height);
-        	t.x = x;
-    		t.y = y;
-    		// make sure we don't place a thing on top of something
-	    	for (Thing something: screen){
-	    		if (something.x == t.x && something.y == t.y){
-	    			t.x = -1;
-	    			break;
-	    		}
-	    	}
-    	}
-    	screen.add(t);
-    }
+
     
-    public void moveRobot(Direction d){
-    	TextView robotText = (TextView)findViewById(R.id.robot);
-    	switch (d){
-    	case UP:
-    		if (robot.y == 0) break;
-    		robot.y--;
-    		break;
-    	
-    	}
-    }
+
     @Override
     public boolean onTrackballEvent(MotionEvent event) {
     	// TODO Auto-generated method stub
@@ -222,6 +155,7 @@ public class robotfindskitten extends Activity {
     		if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT){
     			
     		}
+    		return true;
     	}
     	return false;
     }
