@@ -13,14 +13,10 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.TextView;
 
 public class RFKView extends View {
 	
 	private List<Thing> things = new ArrayList<Thing>();
-	
-	private Thing robot;
-	private Thing kitten;
 	
 	private Paint robotPaint;
 	private Paint robotBg;
@@ -129,16 +125,6 @@ public class RFKView extends View {
     
 	public void addThing(Thing thing){
 		things.add(thing);
-	}
-	
-	public void addRobot(Thing robot){
-		this.robot = robot;
-		addThing(robot);
-	}
-	
-	public void addKitten(Thing kitten){
-		this.kitten = kitten;
-		addThing(kitten);
 	}
 	
 	public Thing thingAt(int x, int y){

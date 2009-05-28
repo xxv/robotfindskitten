@@ -3,31 +3,19 @@ package info.staticfree.android.robotfindskitten;
 import info.staticfree.android.robotfindskitten.Thing.ThingType;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 import android.app.Activity;
-import android.content.res.ColorStateList;
-import android.content.res.Resources.Theme;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.AttributeSet;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
-import android.view.ViewGroup;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.RelativeLayout.LayoutParams;
 
 public class robotfindskitten extends Activity {
 	public enum InputMode { ANY_KEY, DIRECTIONAL };
@@ -104,12 +92,12 @@ public class robotfindskitten extends Activity {
     
     public void addThings(){
     	robot = new Thing(ThingType.ROBOT);    	
-    	rfkView.addRobot(robot);
+    	rfkView.addThing(robot);
     	
     	Thing kitten = new Thing(ThingType.KITTEN);
     	kitten.character = "" + randomChar();
     	randomizeThingColor(kitten);
-    	rfkView.addKitten(kitten);
+    	rfkView.addThing(kitten);
     	
     	// add in the other things that aren't kitten
     	for(int i = 0; i < 20; i++){
@@ -191,19 +179,6 @@ public class robotfindskitten extends Activity {
     	rfkView.invalidate();
     }
 
-    
-    @Override
-    public boolean onTrackballEvent(MotionEvent event) {
-    	// TODO Auto-generated method stub
-    	return super.onTrackballEvent(event);
-    }
-    
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-    	// TODO Auto-generated method stub
-    	return super.onTouchEvent(event);
-    }
-    
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
     	if (inputMode == InputMode.ANY_KEY){
