@@ -1,5 +1,27 @@
 package info.staticfree.android.robotfindskitten;
 
+/*
+ *robotfindskitten: A Zen simulation
+ *
+ * Copyright ©2009 Steve Pomeroy <steve@staticfree.info>
+ * some bits Copyright (C) 1997,2000 Leonard Richardson 
+ *                        leonardr@segfault.org
+ *                        http://www.crummy.com/devel/
+ *
+ *   This program is free software; you can redistribute it and/or
+ *   modify it under the terms of the GNU General Public License as
+ *   published by the Free Software Foundation; either version 2 of
+ *   the License, or (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or EXISTANCE OF KITTEN.  See the GNU General
+ *   Public License for more details.
+ *
+ *   http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 import info.staticfree.android.robotfindskitten.Thing.ThingType;
 
 import java.io.BufferedReader;
@@ -12,13 +34,12 @@ import java.util.Random;
 import org.json.JSONArray;
 
 import android.app.Activity;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.TranslateAnimation;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,16 +49,16 @@ public class robotfindskitten extends Activity {
 	public enum Direction { UP, RIGHT, DOWN, LEFT };
 	public enum GameState {INTRO, INGAME, ENDGAME };
 	
-	// these define the playing field. Mostly useful for detecting where things are.
-	
 	private Random rand = new Random();
 	
-	private RFKView rfkView;
+	private RFKView rfkView; // our kitten-seeking arena
 	private Thing robot;
 	private Thing kitten;
+	
 	private Toast recentMessage;
 	private Thing recentCollision;
 	
+	// all valid messages and Thing characters
 	private List<String> messages = new ArrayList<String>();
 	private String validChars;
 	
@@ -49,16 +70,19 @@ public class robotfindskitten extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
+        // make it big...
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+        		WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         setContentView(R.layout.intro);
 		Animation fadeInAnim =  AnimationUtils.loadAnimation(this, R.anim.fadein);
 		fadeInAnim.setFillAfter(true);
 		
-		RelativeLayout introLayout = (RelativeLayout)findViewById(R.id.intro_layout);
-		introLayout.startAnimation(fadeInAnim);
+		// ...and ease on in.
+		((RelativeLayout)findViewById(R.id.intro_layout)).startAnimation(fadeInAnim);
 		
-        // load all the characters
+        // load all the characters. Eventually should pull unicode chars, too.
         StringBuilder chars = new StringBuilder();
         for (int i = 0x21; i < 127; i++){
         	char c = Character.toChars(i)[0];
@@ -70,19 +94,22 @@ public class robotfindskitten extends Activity {
         System.err.println("valid characters: " + validChars);
 
         loadMessages();
-
-        
     }
     
     
-    
+    /**
+     * Pull in all the messages from a JSON file.
+     * 
+     * Eventually, one could have a JSON-serving URL for more!
+     */
     private void loadMessages(){
     	InputStream is = getResources().openRawResource(R.raw.messages);
     	
     	StringBuilder jsonString = new StringBuilder();
     	try{
     		
-	    	for (BufferedReader isReader = new BufferedReader(new InputStreamReader(is), 16000); isReader.ready();){
+	    	for (BufferedReader isReader = new BufferedReader(new InputStreamReader(is), 16000);
+	    			isReader.ready();){
 	    		jsonString.append(isReader.readLine());
 	    	}
 	    	
@@ -94,46 +121,48 @@ public class robotfindskitten extends Activity {
     	}catch (Exception e){
     		Toast.makeText(this, "error reading messages: "+e.toString(), 
     				Toast.LENGTH_LONG).show();
+    		e.printStackTrace();
     	}
     }
+    
+    /**
+     * Start the game. Use this when the main view isn't the gameboard. 
+     */
     public void startGame(){
     	setContentView(R.layout.main);
     	rfkView = (RFKView)findViewById(R.id.rfk);
     	resetGame();
     }
+    
+    /**
+     * Wipe and repopulate the gameboard. 
+     */
     public void resetGame(){
     	rfkView.clearBoard();
     	
         addThings();
-    }
-    
-    
-    public void randomizeThingColor(Thing t){
-    	int base = 30;
-    	t.color = Color.argb(255, 
-    			base + rand.nextInt(256 - base),
-    			base + rand.nextInt(256 - base),
-    			base + rand.nextInt(256 - base)); 
     }
    
     public char randomChar(){
     	return validChars.charAt(rand.nextInt(validChars.length()));
     }
     
+    /**
+     * Add all the important Things to the arena.
+     * Adds unimportant Things, too.
+     */
     public void addThings(){
     	robot = new Thing(ThingType.ROBOT);    	
     	rfkView.addThing(robot);
     	
     	kitten = new Thing(ThingType.KITTEN);
     	kitten.character = "" + randomChar();
-    	randomizeThingColor(kitten);
     	rfkView.addThing(kitten);
     	
     	// add in the other things that aren't kitten
     	for(int i = 0; i < 20; i++){
     		Thing something = new Thing(ThingType.NKI);
         	something.character = "" + randomChar();
-        	randomizeThingColor(something);
         	
     		// give that something a unique message
     		while (something.message == null){
@@ -149,6 +178,14 @@ public class robotfindskitten extends Activity {
     	}
     }
 
+    /**
+     * Determine/handle if movement to x, y would result in a
+     * collision. If it does, handle collision.
+     * 
+     * @param x
+     * @param y
+     * @return true if a collision occurred, false if we're free to wiggle.
+     */
     public boolean isCollision(int x, int y){
     	Thing thing = rfkView.thingAt(x, y);
 
@@ -172,6 +209,13 @@ public class robotfindskitten extends Activity {
     		return false;
     	}
     }
+    
+    /**
+     * MOVE 'ZIG'
+     * FOR GREAT JUSTICE.
+     * 
+     * @param d
+     */
     public void moveRobot(Direction d){
     	int width = rfkView.getBoardWidth();
     	int height = rfkView.getBoardHeight();
@@ -258,14 +302,16 @@ public class robotfindskitten extends Activity {
     	TextView kitten = (TextView)findViewById(R.id.anim_kitten);
     	kitten.setText(this.kitten.character);
     	kitten.setTextColor(this.kitten.color);
-    	TextView win = (TextView)findViewById(R.id.anim_wintext);
     	TextView heart = (TextView)findViewById(R.id.anim_heart);
     	TextView heartAbove = (TextView)findViewById(R.id.anim_heart_above);
+    	TextView win = (TextView)findViewById(R.id.anim_wintext);
+    	TextView win2 = (TextView)findViewById(R.id.anim_wintext2);
     	
     	Animation zoomAnim = AnimationUtils.loadAnimation(this, R.anim.zoomfade);
     	Animation rightAnim =  AnimationUtils.loadAnimation(this, R.anim.moveright);
     	Animation leftAnim =  AnimationUtils.loadAnimation(this, R.anim.moveleft);
     	Animation fadeInAnim =  AnimationUtils.loadAnimation(this, R.anim.fadein);
+    	Animation fadeInLaterAnim =  AnimationUtils.loadAnimation(this, R.anim.fadeinlater);
     	Animation moveUpAnim =  AnimationUtils.loadAnimation(this, R.anim.moveup);
     	
     	// this is supposed to be set via the XML, but it seems to be ignored there.
@@ -274,17 +320,21 @@ public class robotfindskitten extends Activity {
     	zoomAnim.setFillAfter(true);
     	fadeInAnim.setFillAfter(true);
     	moveUpAnim.setFillAfter(true);
+    	fadeInLaterAnim.setFillAfter(true);
     	
     	robot.startAnimation(rightAnim);
     	heart.startAnimation(zoomAnim);
     	heartAbove.startAnimation(moveUpAnim);
     	kitten.startAnimation(leftAnim);
     	win.startAnimation(fadeInAnim);
+    	win2.startAnimation(fadeInLaterAnim);
     	
+    	// this is an attempt to prevent flashing
+    	// of the animation before they are shown.
+    	// Keep your pants on, ladies.
     	win.setVisibility(TextView.VISIBLE);
+    	win2.setVisibility(TextView.VISIBLE);
     	heart.setVisibility(TextView.VISIBLE);
     	heartAbove.setVisibility(TextView.VISIBLE);
-
-    	
     }
 }

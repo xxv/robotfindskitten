@@ -2,7 +2,7 @@
   android:shareInterpolator="false">
   <translate android:interpolator="@android:anim/decelerate_interpolator"
   	android:fillAfter="true"
-  	android:startOffset="2000"
+  	android:startOffset="3000"
     android:duration="1000" 
     android:fromYDelta="0.0"
     android:toYDelta="-23"      
@@ -10,7 +10,7 @@
      <alpha  android:interpolator="@android:anim/decelerate_interpolator"
           android:fromAlpha="0.0"
           android:toAlpha="1.0"
-          android:startOffset="2000"
+          android:startOffset="3000"
           android:duration="1000"
           android:fillAfter="true"
           />

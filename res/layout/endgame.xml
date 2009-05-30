@@ -54,7 +54,16 @@
 		android:layout_centerHorizontal="true"
 		android:layout_below="@id/anim_kitten"
 		android:visibility="invisible"
-		/>		
+		/>
 
-	
+		<TextView android:id="@+id/anim_wintext2"
+		android:text="@string/win2" 
+		android:layout_height="wrap_content" 
+		android:layout_width="wrap_content"
+		android:layout_centerHorizontal="true"
+		android:layout_below="@id/anim_wintext"
+		android:layout_marginTop="20dp"
+		android:visibility="invisible"
+		
+		/>
 </RelativeLayout>

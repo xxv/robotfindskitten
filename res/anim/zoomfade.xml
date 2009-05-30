@@ -1,6 +1,5 @@
 <set  xmlns:android="http://schemas.android.com/apk/res/android"
   android:shareInterpolator="false">
-  <set>
 <scale
           android:interpolator="@android:anim/accelerate_decelerate_interpolator"
           android:fromXScale="0.0" android:toXScale="50.0"
@@ -8,44 +7,12 @@
           android:toYScale="50.0"
           android:pivotX="50%"
           android:pivotY="50%"
-          android:startOffset="2000"
+          android:startOffset="3000"
           android:duration="700" />
           <alpha  android:interpolator="@android:anim/accelerate_decelerate_interpolator"
           android:fromAlpha="1.0"
           android:toAlpha="0.0"
-          android:startOffset="2000"
+          android:startOffset="3000"
           android:duration="700"
           />
-</set>
-<!--          <alpha  android:interpolator="@android:anim/accelerate_decelerate_interpolator"
-          android:fromAlpha="0.0"
-          android:toAlpha="1.0"
-          android:startOffset="2701"
-          android:duration="700"
-          android:fillBefore="false"
-          />--><!--
-          <scale
-          android:interpolator="@android:anim/accelerate_decelerate_interpolator"
-          android:fromXScale="0.0"
-          android:toXScale="1.0"
-          android:fromYScale="0.0"
-          android:toYScale="1.0"
-          android:pivotX="50%"
-          android:pivotY="50%"
-          android:startOffset="2701"
-          android:fillAfter="true"
-          android:fillBefore="false"
-          android:duration="700" />
-          <translate
-          android:interpolator="@android:anim/accelerate_decelerate_interpolator"
-          android:fromYDelta="0"
-          android:toYDelta="30"
-          android:fromXDelta="0"
-          android:toXDelta="0"
-          android:duration="700"
-             android:startOffset="2700"
-             android:fillBefore="false"
-          android:fillAfter="true"
-          /> - >
-</set>-->
 </set>
