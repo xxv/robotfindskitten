@@ -15,6 +15,7 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.TranslateAnimation;
@@ -25,6 +26,7 @@ import android.widget.Toast;
 public class robotfindskitten extends Activity {
 	public enum InputMode { ANY_KEY, DIRECTIONAL };
 	public enum Direction { UP, RIGHT, DOWN, LEFT };
+	public enum GameState {INTRO, INGAME, ENDGAME };
 	
 	// these define the playing field. Mostly useful for detecting where things are.
 	
@@ -39,14 +41,23 @@ public class robotfindskitten extends Activity {
 	private List<String> messages = new ArrayList<String>();
 	private String validChars;
 	
-	private InputMode inputMode = InputMode.DIRECTIONAL;
+	private InputMode inputMode = InputMode.ANY_KEY;
+	private GameState gameState = GameState.INTRO;
 	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
         
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        
+        setContentView(R.layout.intro);
+		Animation fadeInAnim =  AnimationUtils.loadAnimation(this, R.anim.fadein);
+		fadeInAnim.setFillAfter(true);
+		
+		RelativeLayout introLayout = (RelativeLayout)findViewById(R.id.intro_layout);
+		introLayout.startAnimation(fadeInAnim);
+		
         // load all the characters
         StringBuilder chars = new StringBuilder();
         for (int i = 0x21; i < 127; i++){
@@ -60,14 +71,12 @@ public class robotfindskitten extends Activity {
 
         loadMessages();
 
-        rfkView = (RFKView)findViewById(R.id.rfk);
         
-        resetGame();
     }
     
     
     
-    public void loadMessages(){
+    private void loadMessages(){
     	InputStream is = getResources().openRawResource(R.raw.messages);
     	
     	StringBuilder jsonString = new StringBuilder();
@@ -87,12 +96,17 @@ public class robotfindskitten extends Activity {
     				Toast.LENGTH_LONG).show();
     	}
     }
-    
+    public void startGame(){
+    	setContentView(R.layout.main);
+    	rfkView = (RFKView)findViewById(R.id.rfk);
+    	resetGame();
+    }
     public void resetGame(){
     	rfkView.clearBoard();
     	
         addThings();
     }
+    
     
     public void randomizeThingColor(Thing t){
     	int base = 30;
@@ -198,9 +212,15 @@ public class robotfindskitten extends Activity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
     	if (inputMode == InputMode.ANY_KEY){
     		if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER){
-    		resetGame();
+    			switch (gameState){
+    			case ENDGAME:
+    				resetGame();
+    				break;
+    			case INTRO:
+    				startGame();
+    				break;
+    			}
     		
-    		setContentView(R.layout.main);
     		inputMode = InputMode.DIRECTIONAL;
     		}
     		
@@ -229,6 +249,7 @@ public class robotfindskitten extends Activity {
      * Play the endgame animation and move game to next state.
      */
     public void endGameAnimation(){
+    	
     	setContentView(R.layout.endgame);
     	
     	inputMode = InputMode.ANY_KEY;
