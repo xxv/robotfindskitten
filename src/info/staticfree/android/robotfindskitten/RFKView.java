@@ -50,7 +50,7 @@ public class RFKView extends View {
 		robotPaint.setTextSize(cellHeight);
 		robotPaint.setAntiAlias(true);
 		robotPaint.setSubpixelText(true);
-		robotPaint.setTextAlign(Paint.Align.RIGHT);
+		robotPaint.setTextAlign(Paint.Align.LEFT);
 		
 
 		robotBg = new Paint();
@@ -60,7 +60,7 @@ public class RFKView extends View {
 		thingPaint.setTextSize(cellHeight);
 		thingPaint.setAntiAlias(true);
 		thingPaint.setSubpixelText(true);
-		thingPaint.setTextAlign(Paint.Align.RIGHT);
+		thingPaint.setTextAlign(Paint.Align.LEFT);
 		
 		cellWidth = (int)robotPaint.measureText("#");
 	}
@@ -70,8 +70,8 @@ public class RFKView extends View {
 		super.onDraw(canvas);
 		
 		if (width == -1){
-			width = getWidth()/cellWidth;
-			height = getHeight()/cellHeight;
+			width = getWidth()/cellWidth - 1;
+			height = getHeight()/cellHeight - 1;
 		}
 
 		background.setARGB(255, 0, 0, 0);
@@ -86,7 +86,7 @@ public class RFKView extends View {
 			Paint paint;
 			if (thing.type == ThingType.ROBOT){
 				paint = robotPaint;
-				Rect r = new Rect((thing.x-1) * cellWidth, (thing.y) * cellHeight + 2, thing.x * cellWidth, (thing.y + 1) * cellHeight + 2);
+				Rect r = new Rect((thing.x) * cellWidth, (thing.y) * cellHeight + 2, (thing.x +1) * cellWidth, (thing.y + 1) * cellHeight + 2);
 				canvas.drawRect(r, robotBg);
 			}else{
 				paint = thingPaint;

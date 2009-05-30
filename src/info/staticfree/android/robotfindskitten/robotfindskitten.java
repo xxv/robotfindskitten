@@ -45,7 +45,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class robotfindskitten extends Activity {
-	public enum InputMode { ANY_KEY, DIRECTIONAL };
+	public enum InputMode { ANY_KEY, DIRECTIONAL, NO_INPUT };
 	public enum Direction { UP, RIGHT, DOWN, LEFT };
 	public enum GameState {INTRO, INGAME, ENDGAME };
 	
@@ -70,18 +70,13 @@ public class robotfindskitten extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        // make it big...
+        // It's not a game if you can still see the chrome
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
         		WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        setContentView(R.layout.intro);
-		Animation fadeInAnim =  AnimationUtils.loadAnimation(this, R.anim.fadein);
-		fadeInAnim.setFillAfter(true);
-		
-		// ...and ease on in.
-		((RelativeLayout)findViewById(R.id.intro_layout)).startAnimation(fadeInAnim);
-		
+        showIntro();
+        
         // load all the characters. Eventually should pull unicode chars, too.
         StringBuilder chars = new StringBuilder();
         for (int i = 0x21; i < 127; i++){
@@ -94,8 +89,8 @@ public class robotfindskitten extends Activity {
         System.err.println("valid characters: " + validChars);
 
         loadMessages();
+        
     }
-    
     
     /**
      * Pull in all the messages from a JSON file.
@@ -126,10 +121,27 @@ public class robotfindskitten extends Activity {
     }
     
     /**
+     * Show the intro screen.
+     */
+    public void showIntro(){
+        setContentView(R.layout.intro);
+		Animation fadeInAnim =  AnimationUtils.loadAnimation(this, R.anim.fadein);
+		fadeInAnim.setFillAfter(true);
+		
+		// ease on in.
+		((RelativeLayout)findViewById(R.id.intro_layout)).startAnimation(fadeInAnim);
+    }
+    
+    /**
      * Start the game. Use this when the main view isn't the gameboard. 
      */
     public void startGame(){
     	setContentView(R.layout.main);
+		Animation fadeInAnim =  AnimationUtils.loadAnimation(this, R.anim.fadein);
+		fadeInAnim.setFillAfter(true);
+		
+		// ease on in.
+		((RelativeLayout)findViewById(R.id.screen)).startAnimation(fadeInAnim);
     	rfkView = (RFKView)findViewById(R.id.rfk);
     	resetGame();
     }
@@ -254,7 +266,10 @@ public class robotfindskitten extends Activity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+    	if (super.onKeyDown(keyCode, event)) return true;
+    	
     	if (inputMode == InputMode.ANY_KEY){
+    		// ok, this isn't really /any/ key.
     		if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER){
     			switch (gameState){
     			case ENDGAME:
@@ -264,8 +279,7 @@ public class robotfindskitten extends Activity {
     				startGame();
     				break;
     			}
-    		
-    		inputMode = InputMode.DIRECTIONAL;
+    			inputMode = InputMode.DIRECTIONAL;
     		}
     		
     		return true;
@@ -284,6 +298,7 @@ public class robotfindskitten extends Activity {
     			return true;
     		}else if(keyCode == KeyEvent.KEYCODE_DPAD_CENTER){
     			endGameAnimation();
+    			return true;
     		}
     	}
     	return false;
@@ -296,7 +311,7 @@ public class robotfindskitten extends Activity {
     	
     	setContentView(R.layout.endgame);
     	
-    	inputMode = InputMode.ANY_KEY;
+    	inputMode = InputMode.NO_INPUT;
     	
     	TextView robot = (TextView)findViewById(R.id.anim_robot);
     	TextView kitten = (TextView)findViewById(R.id.anim_kitten);
@@ -310,7 +325,7 @@ public class robotfindskitten extends Activity {
     	Animation zoomAnim = AnimationUtils.loadAnimation(this, R.anim.zoomfade);
     	Animation rightAnim =  AnimationUtils.loadAnimation(this, R.anim.moveright);
     	Animation leftAnim =  AnimationUtils.loadAnimation(this, R.anim.moveleft);
-    	Animation fadeInAnim =  AnimationUtils.loadAnimation(this, R.anim.fadein);
+    	Animation fadeInAnim =  AnimationUtils.loadAnimation(this, R.anim.fadeindelay);
     	Animation fadeInLaterAnim =  AnimationUtils.loadAnimation(this, R.anim.fadeinlater);
     	Animation moveUpAnim =  AnimationUtils.loadAnimation(this, R.anim.moveup);
     	
@@ -336,5 +351,18 @@ public class robotfindskitten extends Activity {
     	win2.setVisibility(TextView.VISIBLE);
     	heart.setVisibility(TextView.VISIBLE);
     	heartAbove.setVisibility(TextView.VISIBLE);
+    	
+    	// re-enable input once animation is done playing.
+    	Runnable r = new Runnable(){
+			public void run() {
+				try {
+					Thread.sleep(3000);
+				} catch (InterruptedException e) {
+					// *yawn* I was trying to get some sleep!
+				}
+				inputMode = InputMode.ANY_KEY;
+			}
+    	};
+    	new Thread(r).start();
     }
 }
