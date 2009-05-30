@@ -15,6 +15,11 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.TranslateAnimation;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class robotfindskitten extends Activity {
@@ -27,6 +32,7 @@ public class robotfindskitten extends Activity {
 	
 	private RFKView rfkView;
 	private Thing robot;
+	private Thing kitten;
 	private Toast recentMessage;
 	private Thing recentCollision;
 	
@@ -56,7 +62,7 @@ public class robotfindskitten extends Activity {
 
         rfkView = (RFKView)findViewById(R.id.rfk);
         
-        addThings();
+        resetGame();
     }
     
     
@@ -82,8 +88,18 @@ public class robotfindskitten extends Activity {
     	}
     }
     
+    public void resetGame(){
+    	rfkView.clearBoard();
+    	
+        addThings();
+    }
+    
     public void randomizeThingColor(Thing t){
-    	t.color = Color.argb(255, rand.nextInt(256),rand.nextInt(256),rand.nextInt(256)); 
+    	int base = 30;
+    	t.color = Color.argb(255, 
+    			base + rand.nextInt(256 - base),
+    			base + rand.nextInt(256 - base),
+    			base + rand.nextInt(256 - base)); 
     }
    
     public char randomChar(){
@@ -94,7 +110,7 @@ public class robotfindskitten extends Activity {
     	robot = new Thing(ThingType.ROBOT);    	
     	rfkView.addThing(robot);
     	
-    	Thing kitten = new Thing(ThingType.KITTEN);
+    	kitten = new Thing(ThingType.KITTEN);
     	kitten.character = "" + randomChar();
     	randomizeThingColor(kitten);
     	rfkView.addThing(kitten);
@@ -129,8 +145,7 @@ public class robotfindskitten extends Activity {
     		
     		if (thing.type == ThingType.KITTEN){
     			if (recentMessage != null ) recentMessage.cancel();
-    			recentMessage = Toast.makeText(this, "Way to go, robot! You found kitten!", Toast.LENGTH_LONG);
-    			recentMessage.show();
+    			endGameAnimation();
     			
     		}else if (thing.type == ThingType.NKI){
     			if (recentMessage != null ) recentMessage.cancel();
@@ -182,7 +197,13 @@ public class robotfindskitten extends Activity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
     	if (inputMode == InputMode.ANY_KEY){
-
+    		if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER){
+    		resetGame();
+    		
+    		setContentView(R.layout.main);
+    		inputMode = InputMode.DIRECTIONAL;
+    		}
+    		
     		return true;
     	}else if (inputMode == InputMode.DIRECTIONAL){
     		if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT){
@@ -197,8 +218,52 @@ public class robotfindskitten extends Activity {
     		}else if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN){
     			moveRobot(Direction.DOWN);
     			return true;
+    		}else if(keyCode == KeyEvent.KEYCODE_DPAD_CENTER){
+    			endGameAnimation();
     		}
     	}
     	return false;
+    }
+    
+    /**
+     * Play the endgame animation and move game to next state.
+     */
+    public void endGameAnimation(){
+    	setContentView(R.layout.endgame);
+    	
+    	inputMode = InputMode.ANY_KEY;
+    	
+    	TextView robot = (TextView)findViewById(R.id.anim_robot);
+    	TextView kitten = (TextView)findViewById(R.id.anim_kitten);
+    	kitten.setText(this.kitten.character);
+    	kitten.setTextColor(this.kitten.color);
+    	TextView win = (TextView)findViewById(R.id.anim_wintext);
+    	TextView heart = (TextView)findViewById(R.id.anim_heart);
+    	TextView heartAbove = (TextView)findViewById(R.id.anim_heart_above);
+    	
+    	Animation zoomAnim = AnimationUtils.loadAnimation(this, R.anim.zoomfade);
+    	Animation rightAnim =  AnimationUtils.loadAnimation(this, R.anim.moveright);
+    	Animation leftAnim =  AnimationUtils.loadAnimation(this, R.anim.moveleft);
+    	Animation fadeInAnim =  AnimationUtils.loadAnimation(this, R.anim.fadein);
+    	Animation moveUpAnim =  AnimationUtils.loadAnimation(this, R.anim.moveup);
+    	
+    	// this is supposed to be set via the XML, but it seems to be ignored there.
+    	leftAnim.setFillAfter(true);
+    	rightAnim.setFillAfter(true);
+    	zoomAnim.setFillAfter(true);
+    	fadeInAnim.setFillAfter(true);
+    	moveUpAnim.setFillAfter(true);
+    	
+    	robot.startAnimation(rightAnim);
+    	heart.startAnimation(zoomAnim);
+    	heartAbove.startAnimation(moveUpAnim);
+    	kitten.startAnimation(leftAnim);
+    	win.startAnimation(fadeInAnim);
+    	
+    	win.setVisibility(TextView.VISIBLE);
+    	heart.setVisibility(TextView.VISIBLE);
+    	heartAbove.setVisibility(TextView.VISIBLE);
+
+    	
     }
 }

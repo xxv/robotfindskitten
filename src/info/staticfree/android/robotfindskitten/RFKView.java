@@ -135,7 +135,7 @@ public class RFKView extends View {
 		}
 		return null;
 	}
-	
+
 	public int getBoardWidth(){
 		return width;
 	}
@@ -146,5 +146,9 @@ public class RFKView extends View {
 	
 	public List<Thing> getThings(){
 		return things;
+	}
+
+	public void clearBoard(){
+		things.clear();
 	}
 }
