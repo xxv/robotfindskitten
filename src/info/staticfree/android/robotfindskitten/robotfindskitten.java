@@ -34,8 +34,15 @@ import java.util.Random;
 import org.json.JSONArray;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.AlertDialog.Builder;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -48,6 +55,7 @@ public class robotfindskitten extends Activity {
 	public enum InputMode { ANY_KEY, DIRECTIONAL, NO_INPUT };
 	public enum Direction { UP, RIGHT, DOWN, LEFT };
 	public enum GameState {INTRO, INGAME, ENDGAME };
+	static final int ABOUT_DIALOG = 0;
 	
 	private Random rand = new Random();
 	
@@ -265,6 +273,55 @@ public class robotfindskitten extends Activity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+    	getMenuInflater().inflate(R.menu.options, menu);
+    	return true;
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	switch (item.getItemId()){
+    	/* 
+    	case R.id.settings:
+
+            Intent preferencesIntent = new Intent().setClass(this, Preferences.class);
+            startActivityForResult(preferencesIntent, REQUEST_CODE_PREFERENCES);
+
+    		return true;
+    		*/
+    	case R.id.about:
+    		showDialog(ABOUT_DIALOG);
+    		return true;
+    	}
+    	return false;
+    }
+
+    @Override
+    protected Dialog onCreateDialog(int id) {
+    	switch (id){
+    	case ABOUT_DIALOG:
+        	Builder builder = new AlertDialog.Builder(this);
+        	
+        	builder.setTitle(R.string.about_title);
+        	builder.setIcon(R.drawable.icon);
+        	
+        	// using this instead of setMessage lets us have clickable links.
+        	LayoutInflater factory = LayoutInflater.from(this);
+        	builder.setView(factory.inflate(R.layout.about, null));
+        	
+        	builder.setPositiveButton("Ok", new DialogInterface.OnClickListener(){
+        		public void onClick(DialogInterface dialog, int which) {
+        			setResult(RESULT_OK);
+        		}
+        	});
+        	
+        	return builder.create();
+    	}
+        return null;
+    }
+    
+    
+    @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
     	if (super.onKeyDown(keyCode, event)) return true;
     	
@@ -297,8 +354,8 @@ public class robotfindskitten extends Activity {
     			moveRobot(Direction.DOWN);
     			return true;
     		}else if(keyCode == KeyEvent.KEYCODE_DPAD_CENTER){
-    			endGameAnimation();
-    			return true;
+    			// debug endGameAnimation();
+    			// return true;
     		}
     	}
     	return false;
