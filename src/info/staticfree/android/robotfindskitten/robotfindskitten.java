@@ -43,8 +43,11 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
@@ -63,7 +66,8 @@ public class robotfindskitten extends Activity {
 	private Thing robot;
 	private Thing kitten;
 	
-	private Toast recentMessage;
+	private boolean thingMessageAtTop;
+	private boolean thingMessageHidden;
 	private Thing recentCollision;
 	
 	// all valid messages and Thing characters
@@ -144,6 +148,8 @@ public class robotfindskitten extends Activity {
      * Start the game. Use this when the main view isn't the gameboard. 
      */
     public void startGame(){
+    	thingMessageAtTop = true;
+    	thingMessageHidden = true;
     	setContentView(R.layout.main);
 		Animation fadeInAnim =  AnimationUtils.loadAnimation(this, R.anim.fadein);
 		fadeInAnim.setFillAfter(true);
@@ -208,23 +214,24 @@ public class robotfindskitten extends Activity {
      */
     public boolean isCollision(int x, int y){
     	Thing thing = rfkView.thingAt(x, y);
-
+    	TextView thingMessage = (TextView)findViewById(R.id.thing_message);
+    	
     	if (thing != null){
         	// we've already handled this collision, no need to repeat.
     		if (thing == recentCollision) return true;
     		recentCollision = thing;
     		
     		if (thing.type == ThingType.KITTEN){
-    			if (recentMessage != null ) recentMessage.cancel();
+    			thingMessage.setVisibility(View.INVISIBLE);
     			endGameAnimation();
     			
     		}else if (thing.type == ThingType.NKI){
-    			if (recentMessage != null ) recentMessage.cancel();
-    			recentMessage = Toast.makeText(this, thing.message, Toast.LENGTH_LONG);
-    			recentMessage.show();
+    			setThingMessage(thing.message);
+    			
     		}
     		return true;
     	}else {
+    		hideThingMessage();
     		recentCollision = null;
     		return false;
     	}
@@ -272,6 +279,62 @@ public class robotfindskitten extends Activity {
     	rfkView.invalidate();
     }
 
+    private void setThingMessage(String message){
+    	final TextView thingMessage = (TextView)findViewById(R.id.thing_message);
+    	thingMessage.setText(message);
+
+    	// reposition the message window so it doesn't block you from moving around.
+    	if (thingMessageAtTop && robot.y < (0.25 * rfkView.getBoardHeight())){
+			RelativeLayout.LayoutParams rp = new RelativeLayout.LayoutParams(
+					ViewGroup.LayoutParams.FILL_PARENT,
+					ViewGroup.LayoutParams.WRAP_CONTENT);
+			rp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+			thingMessage.setLayoutParams(rp);
+			thingMessageAtTop = false;
+			
+		}else if(! thingMessageAtTop && robot.y > (0.75 * rfkView.getBoardHeight())){
+			RelativeLayout.LayoutParams rp = new RelativeLayout.LayoutParams(
+					ViewGroup.LayoutParams.FILL_PARENT,
+					ViewGroup.LayoutParams.WRAP_CONTENT);
+			rp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+			thingMessage.setLayoutParams(rp);
+			thingMessageAtTop = true;
+		}
+    	
+    	// show the message text
+		if (thingMessage.getVisibility() == View.INVISIBLE){
+			thingMessage.setVisibility(View.VISIBLE);
+			Animation fadeIn = new AlphaAnimation((float)0.0, (float)1.0);
+			fadeIn.setDuration(200);
+			thingMessage.startAnimation(fadeIn);
+			thingMessageHidden = false;
+		}
+    }
+    
+    public void hideThingMessage(){
+    	
+		final TextView thingMessage = (TextView)findViewById(R.id.thing_message);
+		if (thingMessageHidden) return;
+		thingMessageHidden = true;
+		
+		Animation fadeOut = new AlphaAnimation((float)1.0, (float)0.0);
+		fadeOut.setDuration(200);
+		thingMessage.startAnimation(fadeOut);
+		
+		fadeOut.setFillAfter(false);
+		thingMessage.startAnimation(fadeOut);
+		fadeOut.setAnimationListener(new Animation.AnimationListener(){
+			public void onAnimationEnd(Animation animation) {
+				thingMessage.setVisibility(View.INVISIBLE);
+				//rfkView.invalidate();
+			}
+
+			public void onAnimationRepeat(Animation animation) {}
+
+			public void onAnimationStart(Animation animation) {}
+		});
+    }
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
     	getMenuInflater().inflate(R.menu.options, menu);
