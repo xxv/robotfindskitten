@@ -63,7 +63,7 @@
 		android:layout_centerHorizontal="true"
 		android:layout_below="@id/anim_wintext"
 		android:layout_marginTop="20dp"
-		android:visibility="invisible"
-		
+		android:visibility="invisible" 
+    	android:gravity="center_horizontal"
 		/>
 </RelativeLayout>

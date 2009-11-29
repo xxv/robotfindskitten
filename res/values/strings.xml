@@ -4,12 +4,12 @@
     <string name="app_name">robotfindskitten</string>
     <string name="subtitle">a zen simulation</string>
     <string name="introduction">In this game, you are robot (<font fgcolor="#ff000000" bgcolor="#ffff0000">#</font>). Your job is to find kitten. This task is complicated by the existence of various things which are not kitten. Robot must touch items to determine if they are kitten or not. The game ends when robotfindskitten. Alternatively, you may end the game by hitting the Back key.</string>
-    <string name="start">Press the scroll wheel to start.</string>
-    <string name="win">Way to go, robot! You found kitten!</string>
-    <string name="win2">Press the scroll wheel to play again or Back to quit.</string>
+    <string name="start">Press the scroll wheel or tap screen to start.</string>
+    <string name="win">You found kitten! Way to go, robot!</string>
+    <string name="win2">Press the scroll wheel or tap screen to play again. Press Back to quit.</string>
     
     <string name="about_title">robotfindswhat?</string>
-    <string name="about_text">Use the scroll wheel or directional pad to move. Touchscreen support coming soon!\n
+    <string name="about_text">Use the scroll wheel, directional pad or touchscreen to move.\n
     \n<b>Credits</b>\n
     \nThis Android version by Steve Pomeroy and licensed under the GNU GPLv3\nhttp://staticfree.info/projects/rfk/\n
     \nOriginal version by Leonard Richardson\nhttp://www.crummy.com/

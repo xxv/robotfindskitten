@@ -39,14 +39,17 @@ import android.app.Dialog;
 import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.GestureDetector.OnGestureListener;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -54,13 +57,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class robotfindskitten extends Activity {
+public class robotfindskitten extends Activity implements OnGestureListener {
 	public enum InputMode { ANY_KEY, DIRECTIONAL, NO_INPUT };
 	public enum Direction { UP, RIGHT, DOWN, LEFT };
 	public enum GameState {INTRO, INGAME, ENDGAME };
 	static final int ABOUT_DIALOG = 0;
 	
-	private Random rand = new Random();
+	private final Random rand = new Random();
 	
 	private RFKView rfkView; // our kitten-seeking arena
 	private Thing robot;
@@ -71,17 +74,19 @@ public class robotfindskitten extends Activity {
 	private Thing recentCollision;
 	
 	// all valid messages and Thing characters
-	private List<String> messages = new ArrayList<String>();
+	private final List<String> messages = new ArrayList<String>();
 	private String validChars;
 	
 	private InputMode inputMode = InputMode.ANY_KEY;
-	private GameState gameState = GameState.INTRO;
+	private final GameState gameState = GameState.INTRO;
 	
+	private GestureDetector gestureDetector;
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
+        gestureDetector = new GestureDetector(this, this);
         // It's not a game if you can still see the chrome
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -90,9 +95,9 @@ public class robotfindskitten extends Activity {
         showIntro();
         
         // load all the characters. Eventually should pull unicode chars, too.
-        StringBuilder chars = new StringBuilder();
+        final StringBuilder chars = new StringBuilder();
         for (int i = 0x21; i < 127; i++){
-        	char c = Character.toChars(i)[0];
+        	final char c = Character.toChars(i)[0];
         	if (! Character.isWhitespace(c) && ! Character.isISOControl(c) && c != '#'){
         		chars.append(c);
         	}
@@ -110,22 +115,22 @@ public class robotfindskitten extends Activity {
      * Eventually, one could have a JSON-serving URL for more!
      */
     private void loadMessages(){
-    	InputStream is = getResources().openRawResource(R.raw.messages);
+    	final InputStream is = getResources().openRawResource(R.raw.messages);
     	
-    	StringBuilder jsonString = new StringBuilder();
+    	final StringBuilder jsonString = new StringBuilder();
     	try{
     		
-	    	for (BufferedReader isReader = new BufferedReader(new InputStreamReader(is), 16000);
+	    	for (final BufferedReader isReader = new BufferedReader(new InputStreamReader(is), 16000);
 	    			isReader.ready();){
 	    		jsonString.append(isReader.readLine());
 	    	}
 	    	
-	    	JSONArray msgJson = new JSONArray(jsonString.toString());
+	    	final JSONArray msgJson = new JSONArray(jsonString.toString());
 	    	
 	    	for (int i = 0; i < msgJson.length(); i++){
 	    		messages.add(msgJson.getString(i));
 	    	}
-    	}catch (Exception e){
+    	}catch (final Exception e){
     		Toast.makeText(this, "error reading messages: "+e.toString(), 
     				Toast.LENGTH_LONG).show();
     		e.printStackTrace();
@@ -137,7 +142,7 @@ public class robotfindskitten extends Activity {
      */
     public void showIntro(){
         setContentView(R.layout.intro);
-		Animation fadeInAnim =  AnimationUtils.loadAnimation(this, R.anim.fadein);
+		final Animation fadeInAnim =  AnimationUtils.loadAnimation(this, R.anim.fadein);
 		fadeInAnim.setFillAfter(true);
 		
 		// ease on in.
@@ -151,7 +156,7 @@ public class robotfindskitten extends Activity {
     	thingMessageAtTop = true;
     	thingMessageHidden = true;
     	setContentView(R.layout.main);
-		Animation fadeInAnim =  AnimationUtils.loadAnimation(this, R.anim.fadein);
+		final Animation fadeInAnim =  AnimationUtils.loadAnimation(this, R.anim.fadein);
 		fadeInAnim.setFillAfter(true);
 		
 		// ease on in.
@@ -187,13 +192,13 @@ public class robotfindskitten extends Activity {
     	
     	// add in the other things that aren't kitten
     	for(int i = 0; i < 20; i++){
-    		Thing something = new Thing(ThingType.NKI);
+    		final Thing something = new Thing(ThingType.NKI);
         	something.character = "" + randomChar();
         	
     		// give that something a unique message
     		while (something.message == null){
     			something.message =  messages.get(rand.nextInt(messages.size()));
-    			for (Thing someOtherThing: rfkView.getThings()){
+    			for (final Thing someOtherThing: rfkView.getThings()){
     				if (something.message == someOtherThing.message){
     					something.message = null;
     					break;
@@ -213,12 +218,13 @@ public class robotfindskitten extends Activity {
      * @return true if a collision occurred, false if we're free to wiggle.
      */
     public boolean isCollision(int x, int y){
-    	Thing thing = rfkView.thingAt(x, y);
-    	TextView thingMessage = (TextView)findViewById(R.id.thing_message);
+    	final Thing thing = rfkView.thingAt(x, y);
+    	final TextView thingMessage = (TextView)findViewById(R.id.thing_message);
     	
     	if (thing != null){
         	// we've already handled this collision, no need to repeat.
-    		if (thing == recentCollision) return true;
+    		if (thing == recentCollision)
+				return true;
     		recentCollision = thing;
     		
     		if (thing.type == ThingType.KITTEN){
@@ -244,32 +250,40 @@ public class robotfindskitten extends Activity {
      * @param d
      */
     public void moveRobot(Direction d){
-    	int width = rfkView.getBoardWidth();
-    	int height = rfkView.getBoardHeight();
+    	final int width = rfkView.getBoardWidth();
+    	final int height = rfkView.getBoardHeight();
     	switch (d){
     	case UP:
-    		if (robot.y == 0) break;
+    		if (robot.y == 0) {
+				break;
+			}
     		if (! isCollision(robot.x, robot.y - 1)){
     			robot.y--;
     		}
     		break;
 
     	case DOWN:
-    		if (robot.y == height) break;
+    		if (robot.y == height) {
+				break;
+			}
     		if (! isCollision(robot.x, robot.y + 1)){
     			robot.y++;
     		}
     		break;
 
     	case LEFT:
-    		if (robot.x == 0) break;
+    		if (robot.x == 0) {
+				break;
+			}
     		if (! isCollision(robot.x - 1, robot.y)){
     			robot.x--;
     		}
     		break;
 
     	case RIGHT:
-    		if (robot.x == width) break;
+    		if (robot.x == width) {
+				break;
+			}
     		if (! isCollision(robot.x + 1, robot.y)){
     			robot.x++;
     		}
@@ -285,7 +299,7 @@ public class robotfindskitten extends Activity {
 
     	// reposition the message window so it doesn't block you from moving around.
     	if (thingMessageAtTop && robot.y < (0.25 * rfkView.getBoardHeight())){
-			RelativeLayout.LayoutParams rp = new RelativeLayout.LayoutParams(
+			final RelativeLayout.LayoutParams rp = new RelativeLayout.LayoutParams(
 					ViewGroup.LayoutParams.FILL_PARENT,
 					ViewGroup.LayoutParams.WRAP_CONTENT);
 			rp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
@@ -293,7 +307,7 @@ public class robotfindskitten extends Activity {
 			thingMessageAtTop = false;
 			
 		}else if(! thingMessageAtTop && robot.y > (0.75 * rfkView.getBoardHeight())){
-			RelativeLayout.LayoutParams rp = new RelativeLayout.LayoutParams(
+			final RelativeLayout.LayoutParams rp = new RelativeLayout.LayoutParams(
 					ViewGroup.LayoutParams.FILL_PARENT,
 					ViewGroup.LayoutParams.WRAP_CONTENT);
 			rp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
@@ -304,7 +318,7 @@ public class robotfindskitten extends Activity {
     	// show the message text
 		if (thingMessage.getVisibility() == View.INVISIBLE){
 			thingMessage.setVisibility(View.VISIBLE);
-			Animation fadeIn = new AlphaAnimation((float)0.0, (float)1.0);
+			final Animation fadeIn = new AlphaAnimation((float)0.0, (float)1.0);
 			fadeIn.setDuration(200);
 			thingMessage.startAnimation(fadeIn);
 			thingMessageHidden = false;
@@ -314,10 +328,11 @@ public class robotfindskitten extends Activity {
     public void hideThingMessage(){
     	
 		final TextView thingMessage = (TextView)findViewById(R.id.thing_message);
-		if (thingMessageHidden) return;
+		if (thingMessageHidden)
+			return;
 		thingMessageHidden = true;
 		
-		Animation fadeOut = new AlphaAnimation((float)1.0, (float)0.0);
+		final Animation fadeOut = new AlphaAnimation((float)1.0, (float)0.0);
 		fadeOut.setDuration(200);
 		thingMessage.startAnimation(fadeOut);
 		
@@ -363,13 +378,13 @@ public class robotfindskitten extends Activity {
     protected Dialog onCreateDialog(int id) {
     	switch (id){
     	case ABOUT_DIALOG:
-        	Builder builder = new AlertDialog.Builder(this);
+        	final Builder builder = new AlertDialog.Builder(this);
         	
         	builder.setTitle(R.string.about_title);
         	builder.setIcon(R.drawable.icon);
         	
         	// using this instead of setMessage lets us have clickable links.
-        	LayoutInflater factory = LayoutInflater.from(this);
+        	final LayoutInflater factory = LayoutInflater.from(this);
         	builder.setView(factory.inflate(R.layout.about, null));
         	
         	builder.setPositiveButton("Ok", new DialogInterface.OnClickListener(){
@@ -383,23 +398,28 @@ public class robotfindskitten extends Activity {
         return null;
     }
     
+    private void advanceGame(){
+		switch (gameState){
+		case ENDGAME:
+		case INGAME:
+			resetGame();
+			break;
+		case INTRO:
+			startGame();
+			break;
+		}
+		inputMode = InputMode.DIRECTIONAL;
+    }
     
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-    	if (super.onKeyDown(keyCode, event)) return true;
+    	if (super.onKeyDown(keyCode, event))
+			return true;
     	
     	if (inputMode == InputMode.ANY_KEY){
     		// ok, this isn't really /any/ key.
     		if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER){
-    			switch (gameState){
-    			case ENDGAME:
-    				resetGame();
-    				break;
-    			case INTRO:
-    				startGame();
-    				break;
-    			}
-    			inputMode = InputMode.DIRECTIONAL;
+    			advanceGame();
     		}
     		
     		return true;
@@ -424,6 +444,64 @@ public class robotfindskitten extends Activity {
     	return false;
     }
     
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+    		return gestureDetector.onTouchEvent(event);
+    }
+
+    
+	public boolean onDown(MotionEvent e) {
+		return false;
+	}
+
+	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+			float velocityY) {
+		return false;
+	}
+
+	public void onLongPress(MotionEvent e) {}
+
+	private float dxSum;
+	private float dySum;
+	private static final int SENSITIVITY = 40; 	// This feels pretty good. 
+												// Slightly slower than finger 
+												// movement on a G1
+	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
+			float distanceY) {
+    	if (inputMode == InputMode.DIRECTIONAL){
+			dxSum += distanceX;
+			dySum += distanceY;
+			if (dxSum > SENSITIVITY){
+				moveRobot(Direction.LEFT);
+				dxSum = 0;
+			}else if (dxSum < -SENSITIVITY){
+				moveRobot(Direction.RIGHT);
+				dxSum = 0;
+			}
+			
+			if (dySum > SENSITIVITY){
+				moveRobot(Direction.UP);
+				dySum = 0;
+			}else if (dySum < -SENSITIVITY){
+				moveRobot(Direction.DOWN);
+				dySum = 0;
+			}
+			return true;
+    	}
+		return false;
+	}
+
+	public void onShowPress(MotionEvent e) {
+	}
+
+	public boolean onSingleTapUp(MotionEvent e) {
+		if (inputMode == InputMode.ANY_KEY){
+			advanceGame();
+			return true;
+		}
+		return false;
+	}
+	
     /**
      * Play the endgame animation and move game to next state.
      */
@@ -433,21 +511,21 @@ public class robotfindskitten extends Activity {
     	
     	inputMode = InputMode.NO_INPUT;
     	
-    	TextView robot = (TextView)findViewById(R.id.anim_robot);
-    	TextView kitten = (TextView)findViewById(R.id.anim_kitten);
+    	final TextView robot = (TextView)findViewById(R.id.anim_robot);
+    	final TextView kitten = (TextView)findViewById(R.id.anim_kitten);
     	kitten.setText(this.kitten.character);
     	kitten.setTextColor(this.kitten.color);
-    	TextView heart = (TextView)findViewById(R.id.anim_heart);
-    	TextView heartAbove = (TextView)findViewById(R.id.anim_heart_above);
-    	TextView win = (TextView)findViewById(R.id.anim_wintext);
-    	TextView win2 = (TextView)findViewById(R.id.anim_wintext2);
+    	final TextView heart = (TextView)findViewById(R.id.anim_heart);
+    	final TextView heartAbove = (TextView)findViewById(R.id.anim_heart_above);
+    	final TextView win = (TextView)findViewById(R.id.anim_wintext);
+    	final TextView win2 = (TextView)findViewById(R.id.anim_wintext2);
     	
-    	Animation zoomAnim = AnimationUtils.loadAnimation(this, R.anim.zoomfade);
-    	Animation rightAnim =  AnimationUtils.loadAnimation(this, R.anim.moveright);
-    	Animation leftAnim =  AnimationUtils.loadAnimation(this, R.anim.moveleft);
-    	Animation fadeInAnim =  AnimationUtils.loadAnimation(this, R.anim.fadeindelay);
-    	Animation fadeInLaterAnim =  AnimationUtils.loadAnimation(this, R.anim.fadeinlater);
-    	Animation moveUpAnim =  AnimationUtils.loadAnimation(this, R.anim.moveup);
+    	final Animation zoomAnim = AnimationUtils.loadAnimation(this, R.anim.zoomfade);
+    	final Animation rightAnim =  AnimationUtils.loadAnimation(this, R.anim.moveright);
+    	final Animation leftAnim =  AnimationUtils.loadAnimation(this, R.anim.moveleft);
+    	final Animation fadeInAnim =  AnimationUtils.loadAnimation(this, R.anim.fadeindelay);
+    	final Animation fadeInLaterAnim =  AnimationUtils.loadAnimation(this, R.anim.fadeinlater);
+    	final Animation moveUpAnim =  AnimationUtils.loadAnimation(this, R.anim.moveup);
     	
     	// this is supposed to be set via the XML, but it seems to be ignored there.
     	leftAnim.setFillAfter(true);
@@ -473,11 +551,11 @@ public class robotfindskitten extends Activity {
     	heartAbove.setVisibility(TextView.VISIBLE);
     	
     	// re-enable input once animation is done playing.
-    	Runnable r = new Runnable(){
+    	final Runnable r = new Runnable(){
 			public void run() {
 				try {
 					Thread.sleep(3000);
-				} catch (InterruptedException e) {
+				} catch (final InterruptedException e) {
 					// *yawn* I was trying to get some sleep!
 				}
 				inputMode = InputMode.ANY_KEY;
