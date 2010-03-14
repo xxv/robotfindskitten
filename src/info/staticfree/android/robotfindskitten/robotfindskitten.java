@@ -103,7 +103,6 @@ public class robotfindskitten extends Activity implements OnGestureListener {
         	}
         }
         validChars = chars.toString();
-        System.err.println("valid characters: " + validChars);
 
         loadMessages();
         
@@ -131,9 +130,10 @@ public class robotfindskitten extends Activity implements OnGestureListener {
 	    		messages.add(msgJson.getString(i));
 	    	}
     	}catch (final Exception e){
-    		Toast.makeText(this, "error reading messages: "+e.toString(), 
+    		Toast.makeText(this, "error reading NKI messages: "+e.toString(), 
     				Toast.LENGTH_LONG).show();
     		e.printStackTrace();
+    		finish();
     	}
     }
     
@@ -223,8 +223,9 @@ public class robotfindskitten extends Activity implements OnGestureListener {
     	
     	if (thing != null){
         	// we've already handled this collision, no need to repeat.
-    		if (thing == recentCollision)
+    		if (thing == recentCollision) {
 				return true;
+			}
     		recentCollision = thing;
     		
     		if (thing.type == ThingType.KITTEN){
@@ -328,8 +329,9 @@ public class robotfindskitten extends Activity implements OnGestureListener {
     public void hideThingMessage(){
     	
 		final TextView thingMessage = (TextView)findViewById(R.id.thing_message);
-		if (thingMessageHidden)
+		if (thingMessageHidden) {
 			return;
+		}
 		thingMessageHidden = true;
 		
 		final Animation fadeOut = new AlphaAnimation((float)1.0, (float)0.0);
@@ -341,7 +343,6 @@ public class robotfindskitten extends Activity implements OnGestureListener {
 		fadeOut.setAnimationListener(new Animation.AnimationListener(){
 			public void onAnimationEnd(Animation animation) {
 				thingMessage.setVisibility(View.INVISIBLE);
-				//rfkView.invalidate();
 			}
 
 			public void onAnimationRepeat(Animation animation) {}
@@ -359,14 +360,6 @@ public class robotfindskitten extends Activity implements OnGestureListener {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
     	switch (item.getItemId()){
-    	/* 
-    	case R.id.settings:
-
-            Intent preferencesIntent = new Intent().setClass(this, Preferences.class);
-            startActivityForResult(preferencesIntent, REQUEST_CODE_PREFERENCES);
-
-    		return true;
-    		*/
     	case R.id.about:
     		showDialog(ABOUT_DIALOG);
     		return true;
@@ -413,8 +406,9 @@ public class robotfindskitten extends Activity implements OnGestureListener {
     
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-    	if (super.onKeyDown(keyCode, event))
+    	if (super.onKeyDown(keyCode, event)) {
 			return true;
+		}
     	
     	if (inputMode == InputMode.ANY_KEY){
     		// ok, this isn't really /any/ key.

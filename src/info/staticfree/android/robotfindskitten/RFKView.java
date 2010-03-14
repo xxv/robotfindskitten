@@ -16,20 +16,20 @@ import android.view.View;
 
 public class RFKView extends View {
 	
-	private List<Thing> things = new ArrayList<Thing>();
+	private final List<Thing> things = new ArrayList<Thing>();
 	
 	private Paint robotPaint;
 	private Paint robotBg;
-	private Paint background = new Paint();
-	private Paint thingPaint = new Paint();
+	private final Paint background = new Paint();
+	private final Paint thingPaint = new Paint();
 	
 	private int cellWidth = -1;
-	private int cellHeight = 16;
+	private float cellHeight = 16;
 	
 	private int width = -1;
 	private int height;
 	
-	private Random rand = new Random();
+	private final Random rand = new Random();
 	
 	public RFKView(Context context, AttributeSet attrs){
 		super(context, attrs);
@@ -44,6 +44,8 @@ public class RFKView extends View {
 	}
 
 	private void initPaint(){
+		final float scale = getContext().getResources().getDisplayMetrics().density;
+		cellHeight = (cellHeight * scale);
 		robotPaint = new Paint();
 		robotPaint.setARGB(255, 0, 0, 0);
 		robotPaint.setTypeface(Typeface.MONOSPACE);
@@ -66,12 +68,10 @@ public class RFKView extends View {
 	}
 	
 	@Override
-	protected void onDraw(Canvas canvas) {
-		super.onDraw(canvas);
-		
+	protected void onDraw(Canvas canvas) {		
 		if (width == -1){
 			width = getWidth()/cellWidth - 1;
-			height = getHeight()/cellHeight - 1;
+			height = (int)(getHeight()/cellHeight - 1);
 		}
 
 		background.setARGB(255, 0, 0, 0);
@@ -79,14 +79,14 @@ public class RFKView extends View {
 		
 		canvas.drawPaint(background);
 		
-		for (Thing thing: things){
+		for (final Thing thing: things){
 			if (thing.x == -1){
 				placeThing(thing);
 			}
 			Paint paint;
 			if (thing.type == ThingType.ROBOT){
 				paint = robotPaint;
-				Rect r = new Rect((thing.x) * cellWidth, (thing.y) * cellHeight + 2, (thing.x +1) * cellWidth, (thing.y + 1) * cellHeight + 2);
+				final Rect r = new Rect((thing.x) * cellWidth, (int)((thing.y) * cellHeight + 2), (thing.x +1) * cellWidth, (int)((thing.y + 1) * cellHeight + 2));
 				canvas.drawRect(r, robotBg);
 			}else{
 				paint = thingPaint;
@@ -108,13 +108,15 @@ public class RFKView extends View {
     	t.x = -1; // unplaced
     	
     	while (t.x == -1){
-    		int x = rand.nextInt(width);
-    		int y = rand.nextInt(height);
+    		final int x = rand.nextInt(width);
+    		final int y = rand.nextInt(height);
         	t.x = x;
     		t.y = y;
     		// make sure we don't place a thing on top of something
-	    	for (Thing something: things){
-	    		if (something == t) continue; // skip ourselves
+	    	for (final Thing something: things){
+	    		if (something == t) {
+					continue; // skip ourselves
+				}
 	    		if (something.x == t.x && something.y == t.y){
 	    			t.x = -1;
 	    			break;
@@ -128,7 +130,7 @@ public class RFKView extends View {
 	}
 	
 	public Thing thingAt(int x, int y){
-		for (Thing thing: things){
+		for (final Thing thing: things){
 			if (thing.x == x && thing.y == y){
 				return thing;
 			}
