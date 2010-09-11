@@ -1,7 +1,5 @@
 package info.staticfree.android.robotfindskitten;
 
-import info.staticfree.android.robotfindskitten.Thing.ThingType;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -15,27 +13,27 @@ import android.util.AttributeSet;
 import android.view.View;
 
 public class RFKView extends View {
-	
+
 	private final List<Thing> things = new ArrayList<Thing>();
-	
+
 	private Paint robotPaint;
 	private Paint robotBg;
 	private final Paint background = new Paint();
 	private final Paint thingPaint = new Paint();
-	
+
 	private int cellWidth = -1;
 	private float cellHeight = 16;
-	
+
 	private int width = -1;
 	private int height;
-	
+
 	private final Random rand = new Random();
-	
+
 	public RFKView(Context context, AttributeSet attrs){
 		super(context, attrs);
 		initPaint();
 	}
-	
+
 	public RFKView(Context context) {
 		super(context);
 
@@ -53,22 +51,22 @@ public class RFKView extends View {
 		robotPaint.setAntiAlias(true);
 		robotPaint.setSubpixelText(true);
 		robotPaint.setTextAlign(Paint.Align.LEFT);
-		
+
 
 		robotBg = new Paint();
 		robotBg.setARGB(255, 255, 0, 0);
-		
+
 		thingPaint.setTypeface(Typeface.MONOSPACE);
 		thingPaint.setTextSize(cellHeight);
 		thingPaint.setAntiAlias(true);
 		thingPaint.setSubpixelText(true);
 		thingPaint.setTextAlign(Paint.Align.LEFT);
-		
+
 		cellWidth = (int)robotPaint.measureText("#");
 	}
-	
+
 	@Override
-	protected void onDraw(Canvas canvas) {		
+	protected void onDraw(Canvas canvas) {
 		if (width == -1){
 			width = getWidth()/cellWidth - 1;
 			height = (int)(getHeight()/cellHeight - 1);
@@ -76,15 +74,15 @@ public class RFKView extends View {
 
 		background.setARGB(255, 0, 0, 0);
 		getContext().getTheme();
-		
+
 		canvas.drawPaint(background);
-		
+
 		for (final Thing thing: things){
 			if (thing.x == -1){
 				placeThing(thing);
 			}
 			Paint paint;
-			if (thing.type == ThingType.ROBOT){
+			if (thing.type == Thing.ROBOT){
 				paint = robotPaint;
 				final Rect r = new Rect((thing.x) * cellWidth, (int)((thing.y) * cellHeight + 2), (thing.x +1) * cellWidth, (int)((thing.y + 1) * cellHeight + 2));
 				canvas.drawRect(r, robotBg);
@@ -97,16 +95,16 @@ public class RFKView extends View {
 			canvas.drawText(thing.character, thing.x * cellWidth, (1+thing.y) * cellHeight, paint);
 		}
 	}
-	
+
     /**
      * Places a Thing randomly and non-overlappingly on the screen.
-     * onDraw must be called first to size the screen. 
-     * 
+     * onDraw must be called first to size the screen.
+     *
      * @param t
      */
     public void placeThing(Thing t){
     	t.x = -1; // unplaced
-    	
+
     	while (t.x == -1){
     		final int x = rand.nextInt(width);
     		final int y = rand.nextInt(height);
@@ -124,11 +122,11 @@ public class RFKView extends View {
 	    	}
     	}
     }
-    
+
 	public void addThing(Thing thing){
 		things.add(thing);
 	}
-	
+
 	public Thing thingAt(int x, int y){
 		for (final Thing thing: things){
 			if (thing.x == x && thing.y == y){
@@ -141,11 +139,11 @@ public class RFKView extends View {
 	public int getBoardWidth(){
 		return width;
 	}
-	
+
 	public int getBoardHeight(){
 		return height;
 	}
-	
+
 	public List<Thing> getThings(){
 		return things;
 	}
