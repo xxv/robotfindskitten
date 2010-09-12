@@ -47,7 +47,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.GestureDetector.OnGestureListener;
-import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
@@ -67,7 +66,6 @@ public class robotfindskitten extends Activity implements OnGestureListener {
 	private Thing kitten;
 
 	private boolean thingMessageAtTop;
-	private boolean thingMessageHidden;
 	private Thing recentCollision;
 
 	// all valid messages and Thing characters
@@ -77,6 +75,8 @@ public class robotfindskitten extends Activity implements OnGestureListener {
 	private InputMode inputMode = InputMode.ANY_KEY;
 	private final GameState gameState = GameState.INTRO;
 	private TextView thingMessage;
+	private Animation messageDisappear;
+	private Animation messageAppear;
 
 	private GestureDetector gestureDetector;
     /** Called when the activity is first created. */
@@ -104,6 +104,8 @@ public class robotfindskitten extends Activity implements OnGestureListener {
 
         loadMessages();
 
+        messageDisappear = AnimationUtils.loadAnimation(this, R.anim.message_disappear);
+        messageAppear = AnimationUtils.loadAnimation(this, R.anim.message_appear);
     }
 
     /**
@@ -152,7 +154,7 @@ public class robotfindskitten extends Activity implements OnGestureListener {
      */
     public void startGame(){
     	thingMessageAtTop = true;
-    	thingMessageHidden = true;
+    	//thingMessageHidden = true;
     	setContentView(R.layout.main);
         thingMessage = (TextView)findViewById(R.id.thing_message);
 		final Animation fadeInAnim =  AnimationUtils.loadAnimation(this, R.anim.fadein);
@@ -292,60 +294,46 @@ public class robotfindskitten extends Activity implements OnGestureListener {
     	rfkView.invalidate();
     }
 
+	private final static RelativeLayout.LayoutParams TOP_LAYOUT = new RelativeLayout.LayoutParams(
+			ViewGroup.LayoutParams.FILL_PARENT,
+			ViewGroup.LayoutParams.WRAP_CONTENT);
+
+	private final static RelativeLayout.LayoutParams BOTTOM_LAYOUT = new RelativeLayout.LayoutParams(
+			ViewGroup.LayoutParams.FILL_PARENT,
+			ViewGroup.LayoutParams.WRAP_CONTENT);
+
+	static {
+		TOP_LAYOUT.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+		BOTTOM_LAYOUT.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+	}
 
     private void setThingMessage(String message){
-
     	thingMessage.setText(message);
 
     	// reposition the message window so it doesn't block you from moving around.
     	if (thingMessageAtTop && robot.y < (0.25 * rfkView.getBoardHeight())){
-			final RelativeLayout.LayoutParams rp = new RelativeLayout.LayoutParams(
-					ViewGroup.LayoutParams.FILL_PARENT,
-					ViewGroup.LayoutParams.WRAP_CONTENT);
-			rp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-			thingMessage.setLayoutParams(rp);
+			thingMessage.setLayoutParams(BOTTOM_LAYOUT);
 			thingMessageAtTop = false;
 
 		}else if(! thingMessageAtTop && robot.y > (0.75 * rfkView.getBoardHeight())){
-			final RelativeLayout.LayoutParams rp = new RelativeLayout.LayoutParams(
-					ViewGroup.LayoutParams.FILL_PARENT,
-					ViewGroup.LayoutParams.WRAP_CONTENT);
-			rp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-			thingMessage.setLayoutParams(rp);
+			thingMessage.setLayoutParams(TOP_LAYOUT);
 			thingMessageAtTop = true;
 		}
 
     	// show the message text
 		if (thingMessage.getVisibility() == View.INVISIBLE){
 			thingMessage.setVisibility(View.VISIBLE);
-			final Animation fadeIn = new AlphaAnimation((float)0.0, (float)1.0);
-			fadeIn.setDuration(200);
-			thingMessage.startAnimation(fadeIn);
-			thingMessageHidden = false;
+			thingMessage.startAnimation(messageAppear);
 		}
     }
 
     public void hideThingMessage(){
-		if (thingMessageHidden) {
+		if (thingMessage.getVisibility()==View.INVISIBLE) {
 			return;
 		}
-		thingMessageHidden = true;
 
-		final Animation fadeOut = new AlphaAnimation((float)1.0, (float)0.0);
-		fadeOut.setDuration(200);
-		thingMessage.startAnimation(fadeOut);
-
-		fadeOut.setFillAfter(false);
-		thingMessage.startAnimation(fadeOut);
-		fadeOut.setAnimationListener(new Animation.AnimationListener(){
-			public void onAnimationEnd(Animation animation) {
-				thingMessage.setVisibility(View.INVISIBLE);
-			}
-
-			public void onAnimationRepeat(Animation animation) {}
-
-			public void onAnimationStart(Animation animation) {}
-		});
+		thingMessage.setVisibility(View.INVISIBLE);
+		thingMessage.startAnimation(messageDisappear);
     }
 
     @Override
