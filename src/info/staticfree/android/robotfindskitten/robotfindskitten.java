@@ -322,8 +322,8 @@ public class robotfindskitten extends Activity implements OnGestureListener {
 
     	// show the message text
 		if (thingMessage.getVisibility() == View.INVISIBLE){
-			thingMessage.setVisibility(View.VISIBLE);
 			thingMessage.startAnimation(messageAppear);
+			thingMessage.setVisibility(View.VISIBLE);
 		}
     }
 
@@ -332,8 +332,8 @@ public class robotfindskitten extends Activity implements OnGestureListener {
 			return;
 		}
 
-		thingMessage.setVisibility(View.INVISIBLE);
 		thingMessage.startAnimation(messageDisappear);
+		thingMessage.setVisibility(View.INVISIBLE);
     }
 
     @Override
