@@ -10,6 +10,9 @@ public class Thing {
 		KITTEN = 1,
 		ROBOT  = 2;
 
+	//minimum possible color. prevents thing from blending into background.
+	private static final int CONTRAST_SKEW = 80;
+
 	// getters/setters are for wusses. Make it public; live on the edge.
 	public int x = -1;
 	public int y = -1;
@@ -39,11 +42,21 @@ public class Thing {
      * @param t
      */
     public void randomizeColor(){
-    	 // minimum possible color. prevents thing from blending into background.
-    	final int base = 30;
+
     	color = Color.argb(255,
-    			base + rand.nextInt(256 - base),
-    			base + rand.nextInt(256 - base),
-    			base + rand.nextInt(256 - base));
+    			CONTRAST_SKEW + rand.nextInt(256 - CONTRAST_SKEW),
+    			CONTRAST_SKEW + rand.nextInt(256 - CONTRAST_SKEW),
+    			CONTRAST_SKEW + rand.nextInt(256 - CONTRAST_SKEW));
+    }
+
+    /**
+     * Gives the Thing a random color.
+     * @param t
+     */
+    public void randomizeColorLightBg(){
+    	color = Color.argb(255,
+    			rand.nextInt(256 - CONTRAST_SKEW),
+    			rand.nextInt(256 - CONTRAST_SKEW),
+    			rand.nextInt(256 - CONTRAST_SKEW));
     }
 }
