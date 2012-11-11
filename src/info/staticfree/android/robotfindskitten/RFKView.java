@@ -69,6 +69,8 @@ public class RFKView extends View {
 		background.setColor(res.getColor(R.color.ether_background));
 	}
 
+	private final Rect mRect = new Rect();
+
 	@Override
 	protected void onDraw(Canvas canvas) {
 		if (width == -1){
@@ -85,8 +87,11 @@ public class RFKView extends View {
 			Paint paint;
 			if (thing.type == Thing.ROBOT){
 				paint = robotPaint;
-				final Rect r = new Rect((thing.x) * cellWidth, (int)((thing.y) * cellHeight + 2), (thing.x +1) * cellWidth, (int)((thing.y + 1) * cellHeight + 2));
-				canvas.drawRect(r, robotBg);
+				mRect.left = (thing.x) * cellWidth;
+				mRect.top = (int)((thing.y) * cellHeight + 2);
+				mRect.right = (thing.x +1) * cellWidth;
+				mRect.bottom = (int)((thing.y + 1) * cellHeight + 2);
+				canvas.drawRect(mRect, robotBg);
 			}else{
 				paint = thingPaint;
 				paint.setColor(thing.color);
