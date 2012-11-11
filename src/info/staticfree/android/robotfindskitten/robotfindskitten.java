@@ -32,11 +32,12 @@ import org.json.JSONArray;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.AlertDialog.Builder;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.GestureDetector;
+import android.view.GestureDetector.OnGestureListener;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -46,7 +47,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.GestureDetector.OnGestureListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
@@ -416,8 +416,10 @@ public class robotfindskitten extends Activity implements OnGestureListener {
     			moveRobot(Direction.DOWN);
     			return true;
     		}else if(keyCode == KeyEvent.KEYCODE_DPAD_CENTER){
-    			// debug endGameAnimation();
-    			// return true;
+                if (BuildConfig.DEBUG) {
+                    endGameAnimation();
+                    return true;
+                }
     		}
     	}
     	return false;
@@ -438,7 +440,11 @@ public class robotfindskitten extends Activity implements OnGestureListener {
 		return false;
 	}
 
-	public void onLongPress(MotionEvent e) {}
+    public void onLongPress(MotionEvent e) {
+        if (BuildConfig.DEBUG) {
+            endGameAnimation();
+        }
+    }
 
 	private float dxSum;
 	private float dySum;
