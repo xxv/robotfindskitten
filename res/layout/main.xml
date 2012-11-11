@@ -17,7 +17,6 @@
 		android:layout_height="wrap_content"
 		android:id="@+id/thing_message"
 		android:layout_alignParentTop="true"
-		android:background="@android:drawable/toast_frame"
-		android:visibility="invisible"
-		android:text="fnord" />		
+		style="@style/NKIDescription"
+		android:visibility="invisible" />		
 </RelativeLayout>

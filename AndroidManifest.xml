@@ -7,7 +7,8 @@
       <supports-screens android:anyDensity="true" android:smallScreens="true" android:largeScreens="true" />
       
     <application android:icon="@drawable/icon" android:label="@string/app_name"
-    	android:description="@string/subtitle">
+        android:hardwareAccelerated="true" android:allowBackup="false"
+    	android:description="@string/subtitle" android:theme="@style/RFKTheme">
         <activity android:name=".robotfindskitten"
         	android:screenOrientation="nosensor"
             android:label="@string/app_name">

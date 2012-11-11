@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="robot_foreground">#000</color>
+    <color name="robot_background">#f00</color>
+    <color name="ether_background">#000</color>
+    <color name="ether_foreground">#fff</color>
+    <color name="heart">#f00</color>
+
+    
+</resources>

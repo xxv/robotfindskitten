@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -42,10 +43,11 @@ public class RFKView extends View {
 	}
 
 	private void initPaint(){
-		final float scale = getContext().getResources().getDisplayMetrics().density;
+		final Resources res = getContext().getResources();
+		final float scale = res.getDisplayMetrics().density;
 		cellHeight = (cellHeight * scale);
 		robotPaint = new Paint();
-		robotPaint.setARGB(255, 0, 0, 0);
+		robotPaint.setColor(res.getColor(R.color.robot_foreground));
 		robotPaint.setTypeface(Typeface.MONOSPACE);
 		robotPaint.setTextSize(cellHeight);
 		robotPaint.setAntiAlias(true);
@@ -54,7 +56,7 @@ public class RFKView extends View {
 
 
 		robotBg = new Paint();
-		robotBg.setARGB(255, 255, 0, 0);
+		robotBg.setColor(res.getColor(R.color.robot_background));
 
 		thingPaint.setTypeface(Typeface.MONOSPACE);
 		thingPaint.setTextSize(cellHeight);
@@ -63,6 +65,8 @@ public class RFKView extends View {
 		thingPaint.setTextAlign(Paint.Align.LEFT);
 
 		cellWidth = (int)robotPaint.measureText("#");
+
+		background.setColor(res.getColor(R.color.ether_background));
 	}
 
 	@Override
@@ -71,9 +75,6 @@ public class RFKView extends View {
 			width = getWidth()/cellWidth - 1;
 			height = (int)(getHeight()/cellHeight - 1);
 		}
-
-		background.setARGB(255, 0, 0, 0);
-		getContext().getTheme();
 
 		canvas.drawPaint(background);
 
