@@ -1,22 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<RelativeLayout
- android:layout_width="fill_parent"
-  android:layout_height="fill_parent"
-  android:id="@+id/screen"
-   xmlns:android="http://schemas.android.com/apk/res/android">
-   
-   <info.staticfree.android.robotfindskitten.RFKView 
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/screen"
     android:layout_width="fill_parent"
-  	android:layout_height="fill_parent" 
-  	android:id="@+id/rfk"
-  	/>
-	
-	<TextView
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:id="@+id/thing_message"
-		android:layout_alignParentTop="true"
-		style="@style/NKIDescription"
-		android:visibility="invisible" />		
+    android:layout_height="fill_parent" >
+
+    <info.staticfree.android.robotfindskitten.RFKView
+        android:id="@+id/rfk"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
+
+    <TextView
+        android:id="@+id/thing_message"
+        style="@style/NKIDescription"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:visibility="invisible" />
+
 </RelativeLayout>
