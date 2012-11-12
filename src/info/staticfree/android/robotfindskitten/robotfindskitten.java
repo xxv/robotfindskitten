@@ -30,11 +30,13 @@ import java.util.Random;
 
 import org.json.JSONArray;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
@@ -48,6 +50,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -186,8 +189,16 @@ public class robotfindskitten extends Activity implements OnGestureListener {
     public void resetGame() {
         gameState = GameState.INGAME;
         rfkView.clearBoard();
+        hideSystemUi();
 
         addThings();
+    }
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    private void hideSystemUi() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            rfkView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
+        }
     }
 
     public char randomChar() {
@@ -308,10 +319,10 @@ public class robotfindskitten extends Activity implements OnGestureListener {
     }
 
     private final static RelativeLayout.LayoutParams TOP_LAYOUT = new RelativeLayout.LayoutParams(
-            ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
     private final static RelativeLayout.LayoutParams BOTTOM_LAYOUT = new RelativeLayout.LayoutParams(
-            ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
     static {
         TOP_LAYOUT.addRule(RelativeLayout.ALIGN_PARENT_TOP);
@@ -496,6 +507,14 @@ public class robotfindskitten extends Activity implements OnGestureListener {
         return false;
     }
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    private void endGameSetSystemUiVisibility(int visibility) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            final TextView robot = (TextView) findViewById(R.id.anim_robot);
+            robot.setSystemUiVisibility(visibility);
+        }
+    }
+
     /**
      * Play the endgame animation and move game to next state.
      */
@@ -508,6 +527,8 @@ public class robotfindskitten extends Activity implements OnGestureListener {
         inputMode = InputMode.NO_INPUT;
 
         final TextView robot = (TextView) findViewById(R.id.anim_robot);
+        endGameSetSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
+
         final TextView kitten = (TextView) findViewById(R.id.anim_kitten);
         kitten.setText(this.kitten.character);
         kitten.setTextColor(this.kitten.color);
@@ -538,6 +559,36 @@ public class robotfindskitten extends Activity implements OnGestureListener {
         win.startAnimation(fadeInAnim);
         win2.startAnimation(fadeInLaterAnim);
 
+        fadeInAnim.setAnimationListener(new AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                inputMode = InputMode.ANY_KEY;
+            }
+        });
+
+        fadeInLaterAnim.setAnimationListener(new AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                endGameSetSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+            }
+        });
+
         // this is an attempt to prevent flashing
         // of the animation before they are shown.
         // Keep your pants on, ladies.
@@ -546,17 +597,5 @@ public class robotfindskitten extends Activity implements OnGestureListener {
         heart.setVisibility(TextView.VISIBLE);
         heartAbove.setVisibility(TextView.VISIBLE);
 
-        // re-enable input once animation is done playing.
-        final Runnable r = new Runnable() {
-            public void run() {
-                try {
-                    Thread.sleep(3000);
-                } catch (final InterruptedException e) {
-                    // *yawn* I was trying to get some sleep!
-                }
-                inputMode = InputMode.ANY_KEY;
-            }
-        };
-        new Thread(r).start();
     }
 }
