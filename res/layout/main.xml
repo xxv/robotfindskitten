@@ -7,7 +7,27 @@
     <info.staticfree.android.robotfindskitten.RFKView
         android:id="@+id/rfk"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" />
+        android:layout_height="fill_parent"
+        android:background="@color/ether_background" >
+
+        <TextView
+            android:id="@+id/robot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/robot_background"
+            android:fontFamily="monospace"
+            android:text="@string/robot"
+            android:textColor="@color/robot_foreground"
+            android:visibility="invisible" />
+
+        <TextView
+            android:id="@+id/nki"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="monospace"
+            android:text="@string/robot"
+            android:visibility="invisible" />
+    </info.staticfree.android.robotfindskitten.RFKView>
 
     <TextView
         android:id="@+id/thing_message"

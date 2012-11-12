@@ -5,99 +5,102 @@ import java.util.List;
 import java.util.Random;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Rect;
-import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
-public class RFKView extends View {
+public class RFKView extends ViewGroup {
 
     private final List<Thing> things = new ArrayList<Thing>();
-
-    private Paint robotPaint;
-    private Paint robotBg;
-    private final Paint background = new Paint();
-    private final Paint thingPaint = new Paint();
-
-    private int cellWidth = -1;
-    private float cellHeight = 16;
 
     private int width = -1;
     private int height;
 
     private final Random rand = new Random();
 
+    private View mRobot;
+
+    private TextView mNki;
+
     public RFKView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        initPaint();
+
+        init(context, attrs);
     }
 
     public RFKView(Context context) {
         super(context);
 
-        initPaint();
+        init(context, null);
+    }
+
+    private void init(Context context, AttributeSet attrs) {
 
     }
 
-    private void initPaint() {
-        final Resources res = getContext().getResources();
-        final float scale = res.getDisplayMetrics().density;
-        cellHeight = (cellHeight * scale);
-        robotPaint = new Paint();
-        robotPaint.setColor(res.getColor(R.color.robot_foreground));
-        robotPaint.setTypeface(Typeface.MONOSPACE);
-        robotPaint.setTextSize(cellHeight);
-        robotPaint.setAntiAlias(true);
-        robotPaint.setSubpixelText(true);
-        robotPaint.setTextAlign(Paint.Align.LEFT);
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-        robotBg = new Paint();
-        robotBg.setColor(res.getColor(R.color.robot_background));
+        if (mRobot == null) {
+            mRobot = findViewById(R.id.robot);
+        }
+        if (mNki == null) {
+            mNki = (TextView) findViewById(R.id.nki);
+        }
 
-        thingPaint.setTypeface(Typeface.MONOSPACE);
-        thingPaint.setTextSize(cellHeight);
-        thingPaint.setAntiAlias(true);
-        thingPaint.setSubpixelText(true);
-        thingPaint.setTextAlign(Paint.Align.LEFT);
+        mRobot.measure(MeasureSpec.makeMeasureSpec(widthMeasureSpec, MeasureSpec.AT_MOST),
+                MeasureSpec.makeMeasureSpec(heightMeasureSpec, MeasureSpec.AT_MOST));
 
-        cellWidth = (int) robotPaint.measureText("#");
+        mNki.measure(MeasureSpec.makeMeasureSpec(widthMeasureSpec, MeasureSpec.AT_MOST),
+                MeasureSpec.makeMeasureSpec(heightMeasureSpec, MeasureSpec.AT_MOST));
 
-        background.setColor(res.getColor(R.color.ether_background));
+        width = (int) Math.floor((double) getMeasuredWidth() / mNki.getMeasuredWidth());
+
+        height = getMeasuredHeight() / mNki.getMeasuredHeight();
     }
-
-    private final Rect mRect = new Rect();
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (width == -1) {
-            width = getWidth() / cellWidth - 1;
-            height = (int) (getHeight() / cellHeight - 1);
-        }
+        // super.onDraw(canvas);
 
-        canvas.drawPaint(background);
+        // canvas.drawPaint(background);
 
         for (final Thing thing : things) {
             if (thing.x == -1) {
                 placeThing(thing);
             }
-            Paint paint;
+            // final Paint paint;
             if (thing.type == Thing.ROBOT) {
-                paint = robotPaint;
-                mRect.left = (thing.x) * cellWidth;
-                mRect.top = (int) ((thing.y) * cellHeight + 2);
-                mRect.right = (thing.x + 1) * cellWidth;
-                mRect.bottom = (int) ((thing.y + 1) * cellHeight + 2);
-                canvas.drawRect(mRect, robotBg);
+                final int robotW = mRobot.getMeasuredWidth();
+                final int robotH = mRobot.getMeasuredHeight();
+                mRobot.layout(0, 0, robotW, robotH);
+
+                // mRobot.layout(thing.x * robotW, thing.y * robotH, (thing.x + 1) * robotW,
+                // (thing.y + 1) * robotH);
+                canvas.save();
+                canvas.translate(thing.x * robotW, thing.y * robotH);
+                mRobot.draw(canvas);
+                canvas.restore();
+
             } else {
-                paint = thingPaint;
-                paint.setColor(thing.color);
+                mNki.setText(thing.character);
+                mNki.setTextColor(thing.color);
 
+                mNki.measure(MeasureSpec.makeMeasureSpec(getWidth(), MeasureSpec.AT_MOST),
+                        MeasureSpec.makeMeasureSpec(getHeight(), MeasureSpec.AT_MOST));
+                final int nkiW = mNki.getMeasuredWidth();
+                final int nkiH = mNki.getMeasuredHeight();
+                mNki.layout(0, 0, nkiW, nkiH);
+
+                canvas.save();
+                canvas.translate(thing.x * nkiW, thing.y * nkiH);
+
+                mNki.draw(canvas);
+                canvas.restore();
             }
-
-            canvas.drawText(thing.character, thing.x * cellWidth, (1 + thing.y) * cellHeight, paint);
         }
     }
 
@@ -155,5 +158,10 @@ public class RFKView extends View {
 
     public void clearBoard() {
         things.clear();
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        // we fake this, so we don't duplicate a ton of views.
     }
 }

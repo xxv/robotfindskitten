@@ -3,6 +3,7 @@
 
     <string name="app_name">robotfindskitten</string>
     <string name="subtitle">a zen simulation</string>
+    <string name="robot" translatable="false">#</string>
     <string name="introduction">In this game, you are robot (<font bgcolor="#ffff0000" fgcolor="#ff000000">#</font>). Your job is to find kitten. This task is complicated by the existence of various things which are not kitten. Robot must touch items to determine if they are kitten or not. The game ends when robotfindskitten. Alternatively, you may end the game by hitting the Back key.</string>
     <string name="start">Press the scroll wheel or tap screen to start.</string>
     <string name="win">You found kitten! Way to go, robot!</string>
