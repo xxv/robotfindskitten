@@ -202,13 +202,13 @@ public class robotfindskitten extends Activity implements OnGestureListener {
         rfkView.addThing(robot);
 
         kitten = new Thing(Thing.KITTEN);
-        kitten.character = "" + randomChar();
+        kitten.character = Character.toString(randomChar());
         rfkView.addThing(kitten);
 
         // add in the other things that aren't kitten
         for (int i = 0; i < 20; i++) {
             final Thing something = new Thing(Thing.NKI);
-            something.character = "" + randomChar();
+            something.character = Character.toString(randomChar());
 
             // give that something a unique message
             while (something.message == null) {
