@@ -83,7 +83,7 @@ public class robotfindskitten extends Activity implements OnGestureListener {
     private String validChars;
 
     private InputMode inputMode = InputMode.ANY_KEY;
-    private final GameState gameState = GameState.INTRO;
+    private GameState gameState = GameState.INTRO;
     private TextView thingMessage;
     private Animation messageDisappear;
     private Animation messageAppear;
@@ -164,9 +164,11 @@ public class robotfindskitten extends Activity implements OnGestureListener {
      * Start the game. Use this when the main view isn't the gameboard.
      */
     public void startGame() {
+        gameState = GameState.INGAME;
         thingMessageAtTop = true;
         // thingMessageHidden = true;
         setContentView(R.layout.main);
+
         thingMessage = (TextView) findViewById(R.id.thing_message);
         final Animation fadeInAnim = AnimationUtils.loadAnimation(this, R.anim.fadein);
         fadeInAnim.setFillAfter(true);
@@ -174,6 +176,7 @@ public class robotfindskitten extends Activity implements OnGestureListener {
         // ease on in.
         ((RelativeLayout) findViewById(R.id.screen)).startAnimation(fadeInAnim);
         rfkView = (RFKView) findViewById(R.id.rfk);
+
         resetGame();
     }
 
@@ -181,6 +184,7 @@ public class robotfindskitten extends Activity implements OnGestureListener {
      * Wipe and repopulate the gameboard.
      */
     public void resetGame() {
+        gameState = GameState.INGAME;
         rfkView.clearBoard();
 
         addThings();
@@ -446,7 +450,7 @@ public class robotfindskitten extends Activity implements OnGestureListener {
     }
 
     public void onLongPress(MotionEvent e) {
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG && gameState == GameState.INGAME) {
             endGameAnimation();
         }
     }
@@ -496,6 +500,8 @@ public class robotfindskitten extends Activity implements OnGestureListener {
      * Play the endgame animation and move game to next state.
      */
     public void endGameAnimation() {
+
+        gameState = GameState.ENDGAME;
 
         setContentView(R.layout.endgame);
 
