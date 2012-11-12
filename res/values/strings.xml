@@ -18,4 +18,6 @@
     \nWant robotfindskitten for your toaster? See http://robotfindskitten.org/ for other versions!</string>
 
     <string name="about">About</string>
+
+    <string name="heart" translatable="false">♥</string>
 </resources>

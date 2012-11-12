@@ -10,7 +10,7 @@
         android:layout_centerHorizontal="false"
         android:layout_centerVertical="true"
         android:background="@color/robot_background"
-        android:text="#"
+        android:text="@string/robot"
         android:textColor="@color/robot_foreground"
         android:typeface="monospace" />
 
@@ -21,7 +21,7 @@
         android:layout_alignParentRight="true"
         android:layout_centerHorizontal="false"
         android:layout_centerVertical="true"
-        android:text="+"
+        android:text="@string/robot"
         android:typeface="monospace" />
 
     <TextView
@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:text="♥"
+        android:text="@string/heart"
         android:textColor="@color/heart"
         android:textSize="20dp"
         android:typeface="monospace"
@@ -62,7 +62,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:text="♥"
+        android:text="@string/heart"
         android:textColor="@color/heart"
         android:textSize="20dp"
         android:typeface="monospace"
