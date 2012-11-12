@@ -1,13 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="RFKTheme" parent="@android:style/Theme.NoTitleBar.Fullscreen"></style>
-
-    <!-- Default theme for window that looks like a toast. -->
-    <style name="NKIDescription" parent="@android:style/Theme.Dialog">
-        <item name="android:windowBackground">@android:drawable/toast_frame</item>
-        <item name="android:windowAnimationStyle">@android:style/Animation.Toast</item>
-        <item name="android:backgroundDimEnabled">false</item>
+    <style name="RFKTheme" parent="@android:style/Theme.NoTitleBar.Fullscreen">
+        <item name="android:windowBackground">@color/ether_background</item>
     </style>
 
 </resources>

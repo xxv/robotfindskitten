@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Default theme for window that looks like a toast. -->
+    <style name="NKIDescription" parent="android:Theme.Dialog">
+        <item name="android:background">@android:drawable/toast_frame</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Toast</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
+    <style name="Intro" parent="android:Widget.TextView">
+        <item name="android:textAppearance">@android:style/TextAppearance.Small</item>
+        <item name="android:textSize">@dimen/fontSize</item>
+    </style>
+
+    <style name="Intro.Title">
+        <item name="android:layout_marginTop">20dp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Intro.Instructions">
+        <item name="android:layout_margin">15dp</item>
+        <item name="android:layout_marginTop">20sp</item>
+    </style>
+
+    <style name="Intro.AboutButton" parent="android:Widget.Button">
+        <item name="android:layout_marginBottom">15dip</item>
+    </style>
+
+</resources>
