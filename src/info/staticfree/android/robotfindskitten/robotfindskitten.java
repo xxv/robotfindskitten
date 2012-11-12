@@ -400,10 +400,11 @@ public class robotfindskitten extends Activity implements OnGestureListener {
 
     private void advanceGame() {
         switch (gameState) {
-            case ENDGAME:
+
             case INGAME:
                 resetGame();
                 break;
+            case ENDGAME:
             case INTRO:
                 startGame();
                 break;
