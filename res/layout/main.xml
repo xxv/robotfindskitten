@@ -12,19 +12,17 @@
 
         <TextView
             android:id="@+id/robot"
+            style="@style/EtherItem.Robot"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/robot_background"
-            android:fontFamily="monospace"
             android:text="@string/robot"
-            android:textColor="@color/robot_foreground"
             android:visibility="invisible" />
 
         <TextView
             android:id="@+id/nki"
+            style="@style/EtherItem.NKI"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="monospace"
             android:text="@string/robot"
             android:visibility="invisible" />
     </info.staticfree.android.robotfindskitten.RFKView>

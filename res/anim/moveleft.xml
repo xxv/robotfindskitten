@@ -4,6 +4,6 @@
   	android:fillAfter="true"
     android:duration="3000" 
     android:fromXDelta="0.0"
-    android:toXDelta="-47%p"      
+    android:toXDelta="-50%p"
           />
   </set>

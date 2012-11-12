@@ -8,23 +8,58 @@
         <item name="android:backgroundDimEnabled">false</item>
     </style>
 
-    <style name="Intro" parent="android:Widget.TextView">
+    <style name="EtherItem" parent="android:Widget.TextView">
+        <item name="android:fontFamily">monospace</item>
+        <item name="android:textSize">@dimen/fontSize</item>
+    </style>
+
+    <style name="EtherItem.NKI"></style>
+
+    <style name="EtherItem.Kitten"></style>
+
+    <style name="EtherItem.Robot">
+        <item name="android:background">@color/robot_background</item>
+        <item name="android:textColor">@color/robot_foreground</item>
+    </style>
+
+    <style name="GameText" parent="android:Widget.TextView">
         <item name="android:textAppearance">@android:style/TextAppearance.Small</item>
         <item name="android:textSize">@dimen/fontSize</item>
     </style>
 
+    <style name="Intro" parent="GameText"></style>
+
     <style name="Intro.Title">
-        <item name="android:layout_marginTop">20dp</item>
+        <item name="android:layout_marginTop">@dimen/screenPadding</item>
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="Intro.Subtitle"></style>
+
     <style name="Intro.Instructions">
-        <item name="android:layout_margin">15dp</item>
         <item name="android:layout_marginTop">20sp</item>
+        <item name="android:layout_marginLeft">@dimen/screenPadding</item>
+        <item name="android:layout_marginRight">@dimen/screenPadding</item>
+    </style>
+
+    <style name="Intro.Instructions.UI">
+        <item name="android:layout_marginTop">@dimen/screenPadding</item>
     </style>
 
     <style name="Intro.AboutButton" parent="android:Widget.Button">
-        <item name="android:layout_marginBottom">15dip</item>
+        <item name="android:layout_marginBottom">@dimen/screenPadding</item>
+    </style>
+
+    <style name="Endgame" parent="GameText"></style>
+
+    <style name="Endgame.Wintext" parent="GameText">
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:layout_marginLeft">@dimen/screenPadding</item>
+        <item name="android:layout_marginRight">@dimen/screenPadding</item>
+    </style>
+
+    <style name="Endgame.Heart" parent="GameText">
+        <item name="android:textColor">@color/heart</item>
     </style>
 
 </resources>
