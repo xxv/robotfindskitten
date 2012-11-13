@@ -6,6 +6,7 @@ import java.util.Random;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -124,6 +125,14 @@ public class RFKView extends ViewGroup {
             } else {
                 mNki.setText(thing.character);
                 mNki.setTextColor(thing.color);
+                // DEBUG finds kitten for robot
+                if (BuildConfig.DEBUG) {
+                    if (thing.type == Thing.KITTEN) {
+                        mNki.setBackgroundColor(Color.argb(20, 255, 255, 255));
+                    } else {
+                        mNki.setBackgroundColor(Color.TRANSPARENT);
+                    }
+                }
 
                 final int nkiW = mNki.getWidth();
                 final int nkiH = mNki.getHeight();

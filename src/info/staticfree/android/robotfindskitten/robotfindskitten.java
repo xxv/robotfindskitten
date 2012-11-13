@@ -438,11 +438,6 @@ public class robotfindskitten extends Activity implements OnGestureListener {
             } else if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
                 moveRobot(Direction.DOWN);
                 return true;
-            } else if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
-                if (BuildConfig.DEBUG) {
-                    endGameAnimation();
-                    return true;
-                }
             }
         }
         return false;
@@ -462,9 +457,7 @@ public class robotfindskitten extends Activity implements OnGestureListener {
     }
 
     public void onLongPress(MotionEvent e) {
-        if (BuildConfig.DEBUG && gameState == GameState.INGAME) {
-            endGameAnimation();
-        }
+
     }
 
     private float dxSum;
