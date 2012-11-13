@@ -422,9 +422,9 @@ public class robotfindskitten extends Activity implements OnGestureListener {
             // ok, this isn't really /any/ key.
             if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
                 advanceGame();
+                return true;
             }
 
-            return true;
         } else if (inputMode == InputMode.DIRECTIONAL) {
             if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
                 moveRobot(Direction.LEFT);
