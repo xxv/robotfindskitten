@@ -9,11 +9,13 @@
     </style>
 
     <style name="EtherItem" parent="android:Widget.TextView">
-        <item name="android:fontFamily">monospace</item>
+        <item name="android:typeface">monospace</item>
         <item name="android:textSize">@dimen/fontSize</item>
     </style>
 
-    <style name="EtherItem.NKI"></style>
+    <style name="EtherItem.NKI">
+        <item name="android:typeface">monospace</item>
+    </style>
 
     <style name="EtherItem.Kitten"></style>
 

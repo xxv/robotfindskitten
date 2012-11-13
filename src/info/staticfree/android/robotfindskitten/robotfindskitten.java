@@ -288,7 +288,7 @@ public class robotfindskitten extends Activity implements OnGestureListener {
                 break;
 
             case DOWN:
-                if (robot.y == height) {
+                if (robot.y == height - 1) {
                     break;
                 }
                 if (!isCollision(robot.x, robot.y + 1)) {
@@ -306,7 +306,7 @@ public class robotfindskitten extends Activity implements OnGestureListener {
                 break;
 
             case RIGHT:
-                if (robot.x == width) {
+                if (robot.x == width - 1) {
                     break;
                 }
                 if (!isCollision(robot.x + 1, robot.y)) {

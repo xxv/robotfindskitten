@@ -13,16 +13,21 @@ import android.widget.TextView;
 
 public class RFKView extends ViewGroup {
 
-    private final List<Thing> things = new ArrayList<Thing>();
+    private final List<Thing> mThings = new ArrayList<Thing>();
 
-    private int width = -1;
-    private int height;
+    private int mWidth = -1;
+    private int mHeight;
 
     private final Random rand = new Random();
 
     private View mRobot;
 
     private TextView mNki;
+
+    public RFKView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        init(context, attrs);
+    }
 
     public RFKView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -37,7 +42,7 @@ public class RFKView extends ViewGroup {
     }
 
     private void init(Context context, AttributeSet attrs) {
-
+        setWillNotDraw(false);
     }
 
     @Override
@@ -57,31 +62,62 @@ public class RFKView extends ViewGroup {
         mNki.measure(MeasureSpec.makeMeasureSpec(widthMeasureSpec, MeasureSpec.AT_MOST),
                 MeasureSpec.makeMeasureSpec(heightMeasureSpec, MeasureSpec.AT_MOST));
 
-        width = (int) Math.floor((double) getMeasuredWidth() / mNki.getMeasuredWidth());
+        final int measuredWidth = (int) Math.floor((double) getMeasuredWidth()
+                / mNki.getMeasuredWidth());
 
-        height = getMeasuredHeight() / mNki.getMeasuredHeight();
+        final int measuredHeight = (int) Math.floor((double) getMeasuredHeight()
+                / mNki.getMeasuredHeight());
+        boolean shrunk = false;
+        if (mWidth == -1) {
+            mWidth = measuredWidth;
+            mHeight = measuredHeight;
+        } else {
+            // growing is ok.
+            if (measuredWidth > mWidth) {
+                mWidth = measuredWidth;
+            } else if (measuredWidth < mWidth) {
+
+                mWidth = measuredWidth;
+                shrunk = true;
+            }
+
+            if (measuredHeight > mHeight) {
+                mHeight = measuredHeight;
+
+            } else if (measuredHeight < mHeight) {
+                mHeight = measuredHeight;
+                shrunk = true;
+            }
+
+            if (shrunk) {
+                for (final Thing thing : mThings) {
+                    if (thing.x >= measuredWidth || thing.y >= measuredHeight) {
+                        thing.x = -1;
+                        thing.y = -1;
+                        placeThing(thing, measuredWidth, measuredHeight);
+                    }
+                }
+            }
+        }
+        setMeasuredDimension(mWidth * mNki.getMeasuredWidth(), mHeight * mNki.getMeasuredHeight());
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        // super.onDraw(canvas);
+        super.onDraw(canvas);
 
-        // canvas.drawPaint(background);
-
-        for (final Thing thing : things) {
+        for (final Thing thing : mThings) {
             if (thing.x == -1) {
-                placeThing(thing);
+                placeThing(thing, mWidth, mHeight);
             }
             // final Paint paint;
             if (thing.type == Thing.ROBOT) {
-                final int robotW = mRobot.getMeasuredWidth();
-                final int robotH = mRobot.getMeasuredHeight();
-                mRobot.layout(0, 0, robotW, robotH);
+                final int robotW = mRobot.getWidth();
+                final int robotH = mRobot.getHeight();
 
-                // mRobot.layout(thing.x * robotW, thing.y * robotH, (thing.x + 1) * robotW,
-                // (thing.y + 1) * robotH);
                 canvas.save();
                 canvas.translate(thing.x * robotW, thing.y * robotH);
+                canvas.clipRect(0, 0, robotW, robotH);
                 mRobot.draw(canvas);
                 canvas.restore();
 
@@ -89,15 +125,12 @@ public class RFKView extends ViewGroup {
                 mNki.setText(thing.character);
                 mNki.setTextColor(thing.color);
 
-                mNki.measure(MeasureSpec.makeMeasureSpec(getWidth(), MeasureSpec.AT_MOST),
-                        MeasureSpec.makeMeasureSpec(getHeight(), MeasureSpec.AT_MOST));
-                final int nkiW = mNki.getMeasuredWidth();
-                final int nkiH = mNki.getMeasuredHeight();
-                mNki.layout(0, 0, nkiW, nkiH);
+                final int nkiW = mNki.getWidth();
+                final int nkiH = mNki.getHeight();
 
                 canvas.save();
                 canvas.translate(thing.x * nkiW, thing.y * nkiH);
-
+                canvas.clipRect(0, 0, nkiW, nkiH);
                 mNki.draw(canvas);
                 canvas.restore();
             }
@@ -110,7 +143,7 @@ public class RFKView extends ViewGroup {
      *
      * @param t
      */
-    public void placeThing(Thing t) {
+    public void placeThing(Thing t, int width, int height) {
         t.x = -1; // unplaced
 
         while (t.x == -1) {
@@ -119,7 +152,7 @@ public class RFKView extends ViewGroup {
             t.x = x;
             t.y = y;
             // make sure we don't place a thing on top of something
-            for (final Thing something : things) {
+            for (final Thing something : mThings) {
                 if (something == t) {
                     continue; // skip ourselves
                 }
@@ -132,11 +165,11 @@ public class RFKView extends ViewGroup {
     }
 
     public void addThing(Thing thing) {
-        things.add(thing);
+        mThings.add(thing);
     }
 
     public Thing thingAt(int x, int y) {
-        for (final Thing thing : things) {
+        for (final Thing thing : mThings) {
             if (thing.x == x && thing.y == y) {
                 return thing;
             }
@@ -145,23 +178,29 @@ public class RFKView extends ViewGroup {
     }
 
     public int getBoardWidth() {
-        return width;
+        return mWidth;
     }
 
     public int getBoardHeight() {
-        return height;
+        return mHeight;
     }
 
     public List<Thing> getThings() {
-        return things;
+        return mThings;
     }
 
     public void clearBoard() {
-        things.clear();
+        mThings.clear();
     }
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        // we fake this, so we don't duplicate a ton of views.
+        final int nkiW = mNki.getMeasuredWidth();
+        final int nkiH = mNki.getMeasuredHeight();
+        mNki.layout(0, 0, nkiW, nkiH);
+
+        final int robotW = mRobot.getMeasuredWidth();
+        final int robotH = mRobot.getMeasuredHeight();
+        mRobot.layout(0, 0, robotW, robotH);
     }
 }
