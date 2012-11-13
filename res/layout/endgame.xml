@@ -52,7 +52,7 @@
         android:layout_below="@id/anim_wintext"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:text="@string/win_ui_instructions"
+        android:text="@string/ui_instructions_win"
         android:visibility="invisible" />
 
     <TextView

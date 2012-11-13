@@ -5,19 +5,18 @@
     <string name="subtitle">a zen simulation</string>
     <string name="robot" translatable="false">#</string>
     <string name="introduction">In this game, you are robot (<font bgcolor="#ffff0000" fgcolor="#ff000000">#</font>). Your job is to find kitten. This task is complicated by the existence of various things which are not kitten. Robot must touch items to determine if they are kitten or not. The game ends when robotfindskitten. Alternatively, you may end the game by hitting the Back key.</string>
-    <string name="start">Press the scroll wheel or tap screen to start.</string>
+    <string name="ui_instructions_start">Press the scroll wheel or tap screen to start.</string>
+    <string name="ui_instructions_win">Press the scroll wheel or tap screen to play again. Press Back to quit.</string>
     <string name="win_you_found_kitten">You found kitten! Way to go, robot!</string>
-    <string name="win_ui_instructions">Press the scroll wheel or tap screen to play again. Press Back to quit.</string>
     <string name="about_title">robotfindswhat?</string>
-    <string name="about_text">Use the scroll wheel, directional pad or touchscreen to move.\n
+    <string name="about_text">Use the scroll wheel, directional pad, or touchscreen to move.\n
     \n<b>Credits</b>\n
     \nThis Android version by Steve Pomeroy and licensed under the GNU GPLv3\nhttp://staticfree.info/projects/rfk/\n
     \nOriginal version by Leonard Richardson\nhttp://www.crummy.com/
     \nwritten originally for the Nerth Pork robotfindskitten contest and licensed under the GNU GPL.\n
     \nIcon artwork by Sarah Morrison\nhttp://tashari.org/\n
     \nWant robotfindskitten for your toaster? See http://robotfindskitten.org/ for other versions!</string>
-
     <string name="about">About</string>
-
     <string name="heart" translatable="false">♥</string>
+
 </resources>
