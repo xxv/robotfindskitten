@@ -46,6 +46,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
@@ -57,7 +58,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 // TODO make fonts scaled on tablets so that they'd be approx 80x25 - Dan Bornstein <danfuzz@milk.com>
-public class robotfindskitten extends Activity implements OnGestureListener {
+public class robotfindskitten extends Activity implements OnGestureListener, OnClickListener {
     public enum InputMode {
         ANY_KEY, DIRECTIONAL, NO_INPUT
     };
@@ -158,6 +159,11 @@ public class robotfindskitten extends Activity implements OnGestureListener {
         setContentView(R.layout.intro);
         final Animation fadeInAnim = AnimationUtils.loadAnimation(this, R.anim.fadein);
         fadeInAnim.setFillAfter(true);
+        final View aboutButton = findViewById(R.id.about);
+        aboutButton
+                .setVisibility(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ? View.VISIBLE
+                        : View.GONE);
+        aboutButton.setOnClickListener(this);
 
         // ease on in.
         ((RelativeLayout) findViewById(R.id.intro_layout)).startAnimation(fadeInAnim);
@@ -590,6 +596,15 @@ public class robotfindskitten extends Activity implements OnGestureListener {
         win2.setVisibility(TextView.VISIBLE);
         heart.setVisibility(TextView.VISIBLE);
         heartAbove.setVisibility(TextView.VISIBLE);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.about:
+                showDialog(ABOUT_DIALOG);
+                break;
+        }
 
     }
 }

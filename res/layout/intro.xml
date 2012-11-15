@@ -36,4 +36,13 @@
         android:layout_centerHorizontal="true"
         android:text="@string/ui_instructions_start" />
 
+    <Button
+        android:id="@+id/about"
+        style="@style/Intro.AboutButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="@string/about" />
+
 </RelativeLayout>
