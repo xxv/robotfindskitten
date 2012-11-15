@@ -3,9 +3,12 @@
 
     <!-- Default theme for window that looks like a toast. -->
     <style name="NKIDescription" parent="android:Theme.Dialog">
-        <item name="android:background">@android:drawable/toast_frame</item>
+        <item name="android:background">@color/ether_background</item>
         <item name="android:windowAnimationStyle">@android:style/Animation.Toast</item>
         <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:typeface">monospace</item>
+        <item name="android:textSize">@dimen/fontSize</item>
+        <item name="android:padding">@dimen/screenPadding</item>
     </style>
 
     <style name="EtherItem" parent="android:Widget.TextView">
@@ -27,6 +30,7 @@
     <style name="GameText" parent="android:Widget.TextView">
         <item name="android:textAppearance">@android:style/TextAppearance.Small</item>
         <item name="android:textSize">@dimen/fontSize</item>
+        <item name="android:typeface">monospace</item>
     </style>
 
     <style name="Intro" parent="GameText"></style>
@@ -55,7 +59,7 @@
         <item name="android:typeface">monospace</item>
         <item name="android:textSize">@dimen/fontSize</item>
     </style>
- 
+
     <style name="Endgame" parent="GameText"></style>
 
     <style name="Endgame.Wintext" parent="GameText">
