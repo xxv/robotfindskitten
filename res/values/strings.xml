@@ -8,6 +8,7 @@
     <string name="ui_instructions_start">Press the scroll wheel or tap screen to start.</string>
     <string name="ui_instructions_win">Press the scroll wheel or tap screen to play again. Press Back to quit.</string>
     <string name="win_you_found_kitten">You found kitten! Way to go, robot!</string>
+    <string name="nki_no_nkis">This looks remarkably like that thing over there.</string>
     <string name="about_title">robotfindswhat?</string>
     <string name="about_text">Use the scroll wheel, directional pad, or touchscreen to move.\n
     \n<b>Credits</b>\n

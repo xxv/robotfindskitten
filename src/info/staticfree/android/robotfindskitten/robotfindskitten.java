@@ -22,13 +22,8 @@ package info.staticfree.android.robotfindskitten;
  *
  */
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.Random;
-
-import org.json.JSONArray;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -74,6 +69,7 @@ public class robotfindskitten extends Activity implements OnGestureListener, OnC
     static final int ABOUT_DIALOG = 0;
 
     private final Random rand = new Random();
+    private NKIFactory mNkiFactory;
 
     private RFKView rfkView; // our kitten-seeking arena
     private Thing robot;
@@ -82,8 +78,7 @@ public class robotfindskitten extends Activity implements OnGestureListener, OnC
     private boolean thingMessageAtTop;
     private Thing recentCollision;
 
-    // all valid messages and Thing characters
-    private final ArrayList<String> messages = new ArrayList<String>();
+    // all valid Thing characters
     private String validChars;
 
     private InputMode inputMode = InputMode.ANY_KEY;
@@ -93,6 +88,8 @@ public class robotfindskitten extends Activity implements OnGestureListener, OnC
     private Animation messageAppear;
 
     private GestureDetector gestureDetector;
+
+    private final int mNkiCount = 20;
 
     /** Called when the activity is first created. */
     @Override
@@ -117,34 +114,18 @@ public class robotfindskitten extends Activity implements OnGestureListener, OnC
         }
         validChars = chars.toString();
 
+        mNkiFactory = new NKIFactory(this);
         loadMessages();
 
         messageDisappear = AnimationUtils.loadAnimation(this, R.anim.message_disappear);
         messageAppear = AnimationUtils.loadAnimation(this, R.anim.message_appear);
     }
 
-    /**
-     * Pull in all the messages from a JSON file.
-     *
-     * Eventually, one could have a JSON-serving URL for more!
-     */
     private void loadMessages() {
-        final InputStream is = getResources().openRawResource(R.raw.messages);
-
-        final StringBuilder jsonString = new StringBuilder();
         try {
+            mNkiFactory.loadNkiFromAssets();
 
-            for (final BufferedReader isReader = new BufferedReader(new InputStreamReader(is),
-                    16000); isReader.ready();) {
-                jsonString.append(isReader.readLine());
-            }
-
-            final JSONArray msgJson = new JSONArray(jsonString.toString());
-
-            for (int i = 0; i < msgJson.length(); i++) {
-                messages.add(msgJson.getString(i));
-            }
-        } catch (final Exception e) {
+        } catch (final IOException e) {
             Toast.makeText(this, "error reading NKI messages: " + e.toString(), Toast.LENGTH_LONG)
                     .show();
             e.printStackTrace();
@@ -223,20 +204,13 @@ public class robotfindskitten extends Activity implements OnGestureListener, OnC
         rfkView.addThing(kitten);
 
         // add in the other things that aren't kitten
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < mNkiCount; i++) {
             final Thing something = new Thing(Thing.NKI);
             something.character = Character.toString(randomChar());
 
             // give that something a unique message
-            while (something.message == null) {
-                something.message = messages.get(rand.nextInt(messages.size()));
-                for (final Thing someOtherThing : rfkView.getThings()) {
-                    if (something.message == someOtherThing.message) {
-                        something.message = null;
-                        break;
-                    }
-                }
-            }
+            something.message = mNkiFactory.getNki();
+
             rfkView.addThing(something);
         }
     }
