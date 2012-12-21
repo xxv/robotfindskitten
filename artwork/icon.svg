@@ -14,11 +14,11 @@
    height="72"
    id="svg2818"
    version="1.1"
-   inkscape:version="0.47 r22583"
+   inkscape:version="0.48.3.1 r9886"
    sodipodi:docname="icon.svg"
-   inkscape:export-filename="/mnt/media/steve/work/android_workspace/robotfindskitten/artwork/icon.png"
-   inkscape:export-xdpi="90"
-   inkscape:export-ydpi="90">
+   inkscape:export-filename="../rfk.icon.png"
+   inkscape:export-xdpi="125"
+   inkscape:export-ydpi="125">
   <defs
      id="defs2820">
     <linearGradient
@@ -46,18 +46,18 @@
       <feGaussianBlur
          id="feGaussianBlur4532"
          in="SourceAlpha"
-         stdDeviation="2.000000"
+         stdDeviation="1"
          result="blur" />
       <feColorMatrix
          id="feColorMatrix4534"
          result="bluralpha"
          type="matrix"
-         values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0.750000 0 " />
+         values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0.9 0 " />
       <feOffset
          id="feOffset4536"
          in="bluralpha"
          dx="0.000000"
-         dy="2.000000"
+         dy="1"
          result="offsetBlur" />
       <feMerge
          id="feMerge4538">
@@ -78,7 +78,7 @@
        x2="106.71068"
        y2="49.327534"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="translate(-70.710679,995.03465)" />
+       gradientTransform="matrix(1.150579,0,0,1.150579,-86.779073,991.82317)" />
     <linearGradient
        id="linearGradient4616-5">
       <stop
@@ -102,24 +102,45 @@
        x1="36"
        y1="1044.8622"
        x2="36"
-       y2="987.86218" />
-    <clipPath
-       clipPathUnits="userSpaceOnUse"
-       id="clipPath5737">
-      <rect
-         rx="2"
-         y="988.36218"
-         x="8"
-         height="56"
-         width="56"
-         id="rect5739"
-         style="color:#000000;fill:none;stroke:url(#linearGradient5741);stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
-    </clipPath>
+       y2="987.86218"
+       gradientTransform="matrix(1.150579,0,0,1.150579,-5.420846,-153.04286)" />
     <linearGradient
        inkscape:collect="always"
        xlink:href="#linearGradient4712"
        id="linearGradient5741"
        gradientUnits="userSpaceOnUse"
+       x1="36"
+       y1="1044.8622"
+       x2="36"
+       y2="987.86218" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4712"
+       id="linearGradient3015"
+       gradientUnits="userSpaceOnUse"
+       x1="36"
+       y1="1044.8622"
+       x2="36"
+       y2="987.86218"
+       gradientTransform="matrix(1.150579,0,0,1.150579,-5.4208462,-153.04286)" />
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath3023">
+      <rect
+         style="color:#000000;fill:none;stroke:url(#linearGradient3027);stroke-width:1.15057909;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+         id="rect3025"
+         width="64.432426"
+         height="64.432426"
+         x="3.7837861"
+         y="984.146"
+         rx="2.3011582" />
+    </clipPath>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4712"
+       id="linearGradient3027"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.150579,0,0,1.150579,-5.420846,-153.04286)"
        x1="36"
        y1="1044.8622"
        x2="36"
@@ -132,9 +153,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="4"
-     inkscape:cx="29.869581"
-     inkscape:cy="33.345313"
+     inkscape:zoom="5.6"
+     inkscape:cx="36.269213"
+     inkscape:cy="25.573771"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false" />
@@ -146,7 +167,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -156,37 +177,38 @@
      id="layer1"
      transform="translate(0,-980.36218)">
     <rect
-       style="opacity:1;color:#000000;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;filter:url(#filter4530)"
+       style="color:#000000;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;filter:url(#filter4530);enable-background:accumulate"
        id="rect2828"
        width="56"
        height="56"
        x="8"
        y="988.36218"
-       rx="2" />
-    <image
-       sodipodi:absref="/mnt/media/steve/work/android_workspace/robotfindskitten/artwork/rfk.png"
-       xlink:href="rfk.png"
-       clip-path="url(#clipPath5737)"
-       width="108.24162"
-       height="127.1839"
-       id="image5727"
-       x="-17.7048"
-       y="988.41663" />
-    <rect
        rx="2"
-       y="988.36218"
-       x="8"
-       height="56"
-       width="56"
-       id="rect4624"
-       style="opacity:0.2;color:#000000;fill:url(#linearGradient4622-4);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;stroke-opacity:1" />
+       transform="matrix(1.150579,0,0,1.150579,-5.4208462,-153.04286)" />
+    <image
+       sodipodi:absref="./rfk.png"
+       xlink:href="rfk.png"
+       clip-path="url(#clipPath3023)"
+       width="131.98305"
+       height="177.92334"
+       id="image5727"
+       x="-28.591833"
+       y="974.1748" />
     <rect
-       style="opacity:1;color:#000000;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:url(#linearGradient4702);stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;stroke-opacity:1"
-       id="rect4700"
-       width="56"
-       height="56"
-       x="8"
-       y="988.36218"
-       rx="2" />
+       style="color:#000000;fill:none;stroke:url(#linearGradient3015);stroke-width:1.15057898;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       id="rect5739"
+       width="64.432426"
+       height="64.432426"
+       x="3.7837858"
+       y="984.14594"
+       rx="2.301158" />
+    <rect
+       rx="2.3011582"
+       y="984.146"
+       x="3.7837861"
+       height="64.432426"
+       width="64.432426"
+       id="rect4624"
+       style="opacity:0.2;color:#000000;fill:url(#linearGradient4622-4);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
   </g>
 </svg>
