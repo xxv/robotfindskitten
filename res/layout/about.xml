@@ -1,42 +1,43 @@
-<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/about_layout" 
-	android:layout_width="fill_parent" 
-	android:layout_height="fill_parent"
-	android:orientation="vertical">
-	<ScrollView
-		android:layout_width="fill_parent"
-	    android:layout_height="fill_parent"
-	    android:fadingEdge="vertical">
-	        <!-- XXX textColor below is a hack to fix weird issue 
-	        with text turning black while scrolling. Has to do with autoLink. -->
-	        <LinearLayout
-	        android:layout_width="fill_parent" 
-			android:layout_height="fill_parent"
-			android:padding="5dp"
-			android:orientation="vertical">
-			
-		<TextView android:text="@string/app_name"
-		 	android:layout_width="fill_parent"
-		 	android:textColor="#ffffffff"
-		 	android:textStyle="bold"
-		 	android:layout_height="wrap_content" />
-		 	
-		<TextView android:text="@string/subtitle"
-		 	android:layout_width="fill_parent"
-		 	android:textColor="#ffffffff"
-		 	android:layout_marginBottom="10dp"
-		 	android:layout_height="wrap_content" />
-		 	
-	     <TextView android:text="@string/introduction"
-		    android:textColor="#ffffffff"
-		 	android:layout_width="fill_parent"
-		 	android:layout_height="wrap_content"/>
-		 	
-		 <TextView android:text="@string/about_text"
-		 	android:autoLink="web"
-		    android:textColor="#ffffffff"
-		 	android:layout_width="fill_parent"
-		 	android:layout_height="wrap_content"/>
-		 	</LinearLayout>
-	</ScrollView>
-</LinearLayout>
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/about_layout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:fadingEdge="vertical" >
+
+    <!--
+            XXX textColor below is a hack to fix weird issue 
+	        with text turning black while scrolling. Has to do with autoLink.
+    -->
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="5dp" >
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="@string/subtitle" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/introduction" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:autoLink="web"
+            android:text="@string/about_text" />
+    </LinearLayout>
+
+</ScrollView>

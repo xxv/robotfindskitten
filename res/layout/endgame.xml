@@ -1,69 +1,68 @@
-<RelativeLayout  xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent" 
-	android:layout_height="fill_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
 
-	<TextView android:id="@+id/anim_robot"
-		android:text="#"  
-		android:layout_alignParentLeft="true"
-		android:layout_centerVertical="true"
-		android:layout_centerHorizontal="false" 
-	 	android:typeface="monospace"
-	 	android:textColor="#000" 
-	 	android:background="#f00"
-	 	android:layout_width="wrap_content" 
-		android:layout_height="wrap_content"  
-	 	/>
-	
-	<TextView android:id="@+id/anim_kitten"
-		android:text="+"
-		android:layout_alignParentRight="true"
-		
-		android:layout_centerVertical="true"
-		android:layout_centerHorizontal="false" 
-		android:typeface="monospace"
-		android:layout_height="wrap_content" 
-		android:layout_width="wrap_content"
-		/>
-	<TextView android:id="@+id/anim_heart_above"
-		android:text="♥"
-		android:layout_centerHorizontal="true"
-		android:layout_centerVertical="true" 
-		android:typeface="monospace"
-		android:textColor="#f00"
-		android:textSize="20dp"
-		android:layout_height="wrap_content"
-		android:layout_width="wrap_content"
-		android:visibility="invisible"
-		/>
-	<TextView android:id="@+id/anim_wintext"
-		android:text="@string/win" 
-		android:layout_height="wrap_content" 
-		android:layout_width="wrap_content"
-		android:layout_centerHorizontal="true"
-		android:layout_below="@id/anim_kitten"
-		android:visibility="invisible"
-		/>
+    <TextView
+        android:id="@+id/anim_robot"
+        style="@style/EtherItem.Robot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerHorizontal="false"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/fontSizeXNeg"
+        android:text="@string/robot" />
 
-	<TextView android:id="@+id/anim_wintext2"
-		android:text="@string/win2" 
-		android:layout_height="wrap_content" 
-		android:layout_width="wrap_content"
-		android:layout_centerHorizontal="true"
-		android:layout_below="@id/anim_wintext"
-		android:layout_marginTop="20dp"
-		android:visibility="invisible" 
-    	android:gravity="center_horizontal"
-		/>
-		
-	 <TextView android:id="@+id/anim_heart"
-		android:text="♥"
-		android:layout_centerHorizontal="true"
-		android:layout_centerVertical="true" 
-		android:typeface="monospace"
-		android:textColor="#f00"
-		android:textSize="20dp"
-		android:layout_height="wrap_content"
-		android:layout_width="wrap_content"
-		android:visibility="invisible"
-		/>
+    <TextView
+        android:id="@+id/anim_kitten"
+        style="@style/EtherItem.Kitten"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerHorizontal="false"
+        android:layout_marginRight="@dimen/fontSizeXNeg"
+        android:layout_centerVertical="true"
+        android:text="@string/robot" />
+
+    <TextView
+        android:id="@+id/anim_heart_above"
+        style="@style/Endgame.Heart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:text="@string/heart"
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/anim_wintext"
+        style="@style/Endgame.Wintext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/anim_kitten"
+        android:layout_centerHorizontal="true"
+        android:text="@string/win_you_found_kitten"
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/anim_wintext2"
+        style="@style/Endgame.Wintext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/anim_wintext"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="@string/ui_instructions_win"
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/anim_heart"
+        style="@style/Endgame.Heart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:text="@string/heart"
+        android:visibility="invisible" />
+
 </RelativeLayout>

@@ -1,23 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<RelativeLayout
- android:layout_width="fill_parent"
-  android:layout_height="fill_parent"
-  android:id="@+id/screen"
-   xmlns:android="http://schemas.android.com/apk/res/android">
-   
-   <info.staticfree.android.robotfindskitten.RFKView 
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/screen"
     android:layout_width="fill_parent"
-  	android:layout_height="fill_parent" 
-  	android:id="@+id/rfk"
-  	/>
-	
-	<TextView
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:id="@+id/thing_message"
-		android:layout_alignParentTop="true"
-		android:background="@android:drawable/toast_frame"
-		android:visibility="invisible"
-		android:text="fnord" />		
+    android:layout_height="fill_parent" >
+
+    <info.staticfree.android.robotfindskitten.RFKView
+        android:id="@+id/rfk"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_centerInParent="true">
+
+        <TextView
+            android:id="@+id/robot"
+            style="@style/EtherItem.Robot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/robot"
+            android:visibility="invisible" />
+
+        <TextView
+            android:id="@+id/nki"
+            style="@style/EtherItem.NKI"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/robot"
+            android:visibility="invisible" />
+    </info.staticfree.android.robotfindskitten.RFKView>
+
+    <TextView
+        android:id="@+id/thing_message"
+        style="@style/NKIDescription"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:visibility="invisible" />
+
 </RelativeLayout>

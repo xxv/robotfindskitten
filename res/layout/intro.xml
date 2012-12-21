@@ -1,49 +1,48 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" 
-	android:layout_width="fill_parent" 
-	android:layout_height="fill_parent"
-	android:id="@+id/intro_layout"
-	>
-	<RelativeLayout
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:layout_marginTop="20dp"
-		android:layout_centerHorizontal="true"
-		android:layout_alignParentTop="true">
-		
-	<TextView android:id="@+id/intro_title"
-		android:text="@string/app_name"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content" 
-		android:layout_centerHorizontal="true"
-		android:textStyle="bold" />
-		
-	<TextView android:text="@string/subtitle"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_centerHorizontal="true" 
-		android:layout_below="@id/intro_title" />
-		</RelativeLayout>
-		
-	<LinearLayout 
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_centerInParent="true"
-		android:orientation="vertical"
-		android:layout_margin="15dp" 
-		>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/intro_layout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
 
-		
-	<TextView android:text="@string/introduction"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content" 
-		android:layout_marginTop="20sp"
-		/>
-		
-		<TextView android:text="@string/start"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_marginTop="20sp"
-		 />
-		
-		</LinearLayout>
+    <TextView
+        android:id="@+id/intro_title"
+        style="@style/Intro.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:text="@string/app_name" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/intro_title"
+        style="@style/Intro.Subtitle"
+        android:layout_centerHorizontal="true"
+        android:text="@string/subtitle" />
+
+    <TextView
+        android:id="@+id/introduction"
+        style="@style/Intro.Instructions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="@string/introduction" />
+
+    <TextView
+        style="@style/Intro.Instructions.UI"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/introduction"
+        android:layout_centerHorizontal="true"
+        android:text="@string/ui_instructions_start" />
+
+    <Button
+        android:id="@+id/about"
+        style="@style/Intro.AboutButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="@string/about" />
+
 </RelativeLayout>

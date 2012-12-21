@@ -6,149 +6,210 @@ import java.util.Random;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Rect;
-import android.graphics.Typeface;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
-public class RFKView extends View {
+public class RFKView extends ViewGroup {
 
-	private final List<Thing> things = new ArrayList<Thing>();
+    private final List<Thing> mThings = new ArrayList<Thing>();
 
-	private Paint robotPaint;
-	private Paint robotBg;
-	private final Paint background = new Paint();
-	private final Paint thingPaint = new Paint();
+    private int mWidth = -1;
+    private int mHeight;
 
-	private int cellWidth = -1;
-	private float cellHeight = 16;
+    private final Random rand = new Random();
 
-	private int width = -1;
-	private int height;
+    private View mRobot;
 
-	private final Random rand = new Random();
+    private TextView mNki;
 
-	public RFKView(Context context, AttributeSet attrs){
-		super(context, attrs);
-		initPaint();
-	}
+    public RFKView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        init(context, attrs);
+    }
 
-	public RFKView(Context context) {
-		super(context);
+    public RFKView(Context context, AttributeSet attrs) {
+        super(context, attrs);
 
-		initPaint();
+        init(context, attrs);
+    }
 
-	}
+    public RFKView(Context context) {
+        super(context);
 
-	private void initPaint(){
-		final float scale = getContext().getResources().getDisplayMetrics().density;
-		cellHeight = (cellHeight * scale);
-		robotPaint = new Paint();
-		robotPaint.setARGB(255, 0, 0, 0);
-		robotPaint.setTypeface(Typeface.MONOSPACE);
-		robotPaint.setTextSize(cellHeight);
-		robotPaint.setAntiAlias(true);
-		robotPaint.setSubpixelText(true);
-		robotPaint.setTextAlign(Paint.Align.LEFT);
+        init(context, null);
+    }
 
+    private void init(Context context, AttributeSet attrs) {
+        setWillNotDraw(false);
+    }
 
-		robotBg = new Paint();
-		robotBg.setARGB(255, 255, 0, 0);
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-		thingPaint.setTypeface(Typeface.MONOSPACE);
-		thingPaint.setTextSize(cellHeight);
-		thingPaint.setAntiAlias(true);
-		thingPaint.setSubpixelText(true);
-		thingPaint.setTextAlign(Paint.Align.LEFT);
+        if (mRobot == null) {
+            mRobot = findViewById(R.id.robot);
+        }
+        if (mNki == null) {
+            mNki = (TextView) findViewById(R.id.nki);
+        }
 
-		cellWidth = (int)robotPaint.measureText("#");
-	}
+        mRobot.measure(MeasureSpec.makeMeasureSpec(widthMeasureSpec, MeasureSpec.AT_MOST),
+                MeasureSpec.makeMeasureSpec(heightMeasureSpec, MeasureSpec.AT_MOST));
 
-	@Override
-	protected void onDraw(Canvas canvas) {
-		if (width == -1){
-			width = getWidth()/cellWidth - 1;
-			height = (int)(getHeight()/cellHeight - 1);
-		}
+        mNki.measure(MeasureSpec.makeMeasureSpec(widthMeasureSpec, MeasureSpec.AT_MOST),
+                MeasureSpec.makeMeasureSpec(heightMeasureSpec, MeasureSpec.AT_MOST));
 
-		background.setARGB(255, 0, 0, 0);
-		getContext().getTheme();
+        final int measuredWidth = (int) Math.floor((double) getMeasuredWidth()
+                / mNki.getMeasuredWidth());
 
-		canvas.drawPaint(background);
+        final int measuredHeight = (int) Math.floor((double) getMeasuredHeight()
+                / mNki.getMeasuredHeight());
+        boolean shrunk = false;
+        if (mWidth == -1) {
+            mWidth = measuredWidth;
+            mHeight = measuredHeight;
+        } else {
+            // growing is ok.
+            if (measuredWidth > mWidth) {
+                mWidth = measuredWidth;
+            } else if (measuredWidth < mWidth) {
 
-		for (final Thing thing: things){
-			if (thing.x == -1){
-				placeThing(thing);
-			}
-			Paint paint;
-			if (thing.type == Thing.ROBOT){
-				paint = robotPaint;
-				final Rect r = new Rect((thing.x) * cellWidth, (int)((thing.y) * cellHeight + 2), (thing.x +1) * cellWidth, (int)((thing.y + 1) * cellHeight + 2));
-				canvas.drawRect(r, robotBg);
-			}else{
-				paint = thingPaint;
-				paint.setColor(thing.color);
+                mWidth = measuredWidth;
+                shrunk = true;
+            }
 
-			}
+            if (measuredHeight > mHeight) {
+                mHeight = measuredHeight;
 
-			canvas.drawText(thing.character, thing.x * cellWidth, (1+thing.y) * cellHeight, paint);
-		}
-	}
+            } else if (measuredHeight < mHeight) {
+                mHeight = measuredHeight;
+                shrunk = true;
+            }
+
+            if (shrunk) {
+                for (final Thing thing : mThings) {
+                    if (thing.x >= measuredWidth || thing.y >= measuredHeight) {
+                        thing.x = -1;
+                        thing.y = -1;
+                        placeThing(thing, measuredWidth, measuredHeight);
+                    }
+                }
+            }
+        }
+        setMeasuredDimension(mWidth * mNki.getMeasuredWidth(), mHeight * mNki.getMeasuredHeight());
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+
+        for (final Thing thing : mThings) {
+            if (thing.x == -1) {
+                placeThing(thing, mWidth, mHeight);
+            }
+            // final Paint paint;
+            if (thing.type == Thing.ROBOT) {
+                final int robotW = mRobot.getWidth();
+                final int robotH = mRobot.getHeight();
+
+                canvas.save();
+                canvas.translate(thing.x * robotW, thing.y * robotH);
+                canvas.clipRect(0, 0, robotW, robotH);
+                mRobot.draw(canvas);
+                canvas.restore();
+
+            } else {
+                mNki.setText(thing.character);
+                mNki.setTextColor(thing.color);
+                // DEBUG finds kitten for robot
+                if (BuildConfig.DEBUG) {
+                    if (thing.type == Thing.KITTEN) {
+                        mNki.setBackgroundColor(Color.argb(20, 255, 255, 255));
+                    } else {
+                        mNki.setBackgroundColor(Color.TRANSPARENT);
+                    }
+                }
+
+                final int nkiW = mNki.getWidth();
+                final int nkiH = mNki.getHeight();
+
+                canvas.save();
+                canvas.translate(thing.x * nkiW, thing.y * nkiH);
+                canvas.clipRect(0, 0, nkiW, nkiH);
+                mNki.draw(canvas);
+                canvas.restore();
+            }
+        }
+    }
 
     /**
-     * Places a Thing randomly and non-overlappingly on the screen.
-     * onDraw must be called first to size the screen.
+     * Places a Thing randomly and non-overlappingly on the screen. onDraw must be called first to
+     * size the screen.
      *
      * @param t
      */
-    public void placeThing(Thing t){
-    	t.x = -1; // unplaced
+    public void placeThing(Thing t, int width, int height) {
+        t.x = -1; // unplaced
 
-    	while (t.x == -1){
-    		final int x = rand.nextInt(width);
-    		final int y = rand.nextInt(height);
-        	t.x = x;
-    		t.y = y;
-    		// make sure we don't place a thing on top of something
-	    	for (final Thing something: things){
-	    		if (something == t) {
-					continue; // skip ourselves
-				}
-	    		if (something.x == t.x && something.y == t.y){
-	    			t.x = -1;
-	    			break;
-	    		}
-	    	}
-    	}
+        while (t.x == -1) {
+            final int x = rand.nextInt(width);
+            final int y = rand.nextInt(height);
+            t.x = x;
+            t.y = y;
+            // make sure we don't place a thing on top of something
+            for (final Thing something : mThings) {
+                if (something == t) {
+                    continue; // skip ourselves
+                }
+                if (something.x == t.x && something.y == t.y) {
+                    t.x = -1;
+                    break;
+                }
+            }
+        }
     }
 
-	public void addThing(Thing thing){
-		things.add(thing);
-	}
+    public void addThing(Thing thing) {
+        mThings.add(thing);
+    }
 
-	public Thing thingAt(int x, int y){
-		for (final Thing thing: things){
-			if (thing.x == x && thing.y == y){
-				return thing;
-			}
-		}
-		return null;
-	}
+    public Thing thingAt(int x, int y) {
+        for (final Thing thing : mThings) {
+            if (thing.x == x && thing.y == y) {
+                return thing;
+            }
+        }
+        return null;
+    }
 
-	public int getBoardWidth(){
-		return width;
-	}
+    public int getBoardWidth() {
+        return mWidth;
+    }
 
-	public int getBoardHeight(){
-		return height;
-	}
+    public int getBoardHeight() {
+        return mHeight;
+    }
 
-	public List<Thing> getThings(){
-		return things;
-	}
+    public List<Thing> getThings() {
+        return mThings;
+    }
 
-	public void clearBoard(){
-		things.clear();
-	}
+    public void clearBoard() {
+        mThings.clear();
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        final int nkiW = mNki.getMeasuredWidth();
+        final int nkiH = mNki.getMeasuredHeight();
+        mNki.layout(0, 0, nkiW, nkiH);
+
+        final int robotW = mRobot.getMeasuredWidth();
+        final int robotH = mRobot.getMeasuredHeight();
+        mRobot.layout(0, 0, robotW, robotH);
+    }
 }

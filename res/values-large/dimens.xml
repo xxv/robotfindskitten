@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="fontSize">25sp</dimen>
+    <dimen name="fontSizeXNeg">-18sp</dimen>
+        <dimen name="screenPadding">60sp</dimen>
+</resources>
