@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Background color of artwork/rfk.png; see artwork/MakeIcons.java -->
+    <color name="ic_launcher_background">#002368</color>
+
+</resources>

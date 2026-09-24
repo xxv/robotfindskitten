@@ -360,7 +360,7 @@ public class robotfindskitten extends Activity implements OnGestureListener, OnC
                 final Builder builder = new AlertDialog.Builder(this);
 
                 builder.setTitle(R.string.about_title);
-                builder.setIcon(R.drawable.icon);
+                builder.setIcon(R.mipmap.ic_launcher);
 
                 // using this instead of setMessage lets us have clickable links.
                 final LayoutInflater factory = LayoutInflater.from(this);
