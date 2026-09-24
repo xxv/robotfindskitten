@@ -1,4 +1,15 @@
-bin/
-gen/
-.classpath
-.project
+# Gradle
+.gradle/
+build/
+.kotlin/
+local.properties
+
+# Android Studio / IntelliJ
+.idea/
+*.iml
+captures/
+
+# Signing
+keystore.properties
+*.jks
+*.keystore

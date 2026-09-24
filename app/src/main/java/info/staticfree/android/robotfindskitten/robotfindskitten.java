@@ -346,10 +346,9 @@ public class robotfindskitten extends Activity implements OnGestureListener, OnC
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.about:
-                showDialog(ABOUT_DIALOG);
-                return true;
+        if (item.getItemId() == R.id.about) {
+            showDialog(ABOUT_DIALOG);
+            return true;
         }
         return false;
     }
@@ -574,10 +573,8 @@ public class robotfindskitten extends Activity implements OnGestureListener, OnC
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.about:
-                showDialog(ABOUT_DIALOG);
-                break;
+        if (v.getId() == R.id.about) {
+            showDialog(ABOUT_DIALOG);
         }
 
     }
