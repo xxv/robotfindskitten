@@ -1,16 +1,16 @@
 # robotfindskitten
 
 This is an Android implementation of
-[robotfindskitten](http://robotfindskitten.org).
+[robotfindskitten](https://robotfindskitten.org).
 
 ## Download
 
   * [robotfindskitten (Google Play)](https://play.google.com/store/apps/details?id=info.staticfree.android.robotfindskitten)
-  * [robotfindskitten.apk](robotfindskitten.apk) (same as the one published on Play)
+  * [GitHub releases](https://github.com/xxv/robotfindskitten/releases) (signed APKs for sideloading)
 
 ## Changes
 
-  * 1.1.0 - Modernized build (Gradle); targets current Android versions
+  * 2026-09-23: 1.1.701 - Modernized build (Gradle); targets current Android versions; now requires Android 9 or newer
   * 2012-12-21: 1.0.701 - Mayan Apocalypse Edition; a slew of new NKI, tablet support, new old-style theme, updated icon
   * 0.9.406 - Fixed non-shown messages; updated icon
   * 0.8.406 - fixed multi-density scaling; minor visual improvements
@@ -40,17 +40,12 @@ Studio, or run:
 
     ./gradlew assembleDebug
 
-To build a signed release bundle for Google Play, create a
-`keystore.properties` file in the project root (it's ignored by git):
+Releases are built and signed by GitHub Actions when a version tag is pushed;
+see [cicd_notes.md](cicd_notes.md). To sign a release build locally, set
+`KEYSTORE_FILE` (the keystore's path), `KEYSTORE_PASSWORD`, `KEY_ALIAS` and
+`KEY_PASSWORD` in the environment, then run:
 
-    storeFile=/path/to/upload-key.jks
-    storePassword=...
-    keyAlias=...
-    keyPassword=...
-
-Then run:
-
-    ./gradlew bundleRelease
+    ./gradlew assembleRelease bundleRelease
 
 The bundle ends up in `app/build/outputs/bundle/release/app-release.aab`.
 
@@ -58,10 +53,6 @@ The bundle ends up in `app/build/outputs/bundle/release/app-release.aab`.
 
 The code is made available under the GPL v3
 
-### Thanks!
-
-[ ![Flattr this](http://api.flattr.com/button/flattr-badge-
-large.png)](http://flattr.com/thing/633876/Android-robotfindskitten)
 
 ### Credits
 
