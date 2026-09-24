@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:fitsSystemWindows="true"
+<!--
+    The system window insets are applied by this outer FrameLayout rather than the RelativeLayout,
+    as RelativeLayout ignores its padding when centering the board, which clips the top row when
+    the top inset is larger than the bottom one.
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:fitsSystemWindows="true" >
+
+<RelativeLayout
     android:id="@+id/screen"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
@@ -37,3 +46,5 @@
         android:visibility="invisible" />
 
 </RelativeLayout>
+
+</FrameLayout>
