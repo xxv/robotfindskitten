@@ -28,4 +28,4 @@ a stronger key. `signing/lineage` is the proof of rotation between them.
 
 To sign locally, set `KEYSTORE_FILE` (a path) and the same passwords and alias,
 then run `./gradlew assembleRelease bundleRelease` (current key only), or
-esigning/sign-apk.sh sign <unsigned.apk> <signed.apk>` for the lineage.
+`signing/sign-apk.sh sign <unsigned.apk> <signed.apk>` for the lineage.

@@ -1,3 +1,8 @@
+---
+title: Privacy Policy
+permalink: /privacy/
+---
+
 # Privacy Policy for robotfindskitten
 
 *Last updated: September 23, 2026*
